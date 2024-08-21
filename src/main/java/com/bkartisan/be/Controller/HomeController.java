@@ -28,7 +28,7 @@ public class HomeController {
         return "Welcome to " + request.getSession().getId();
     }
 
-    @GetMapping("/users")
+    @GetMapping("users")
     public ResponseEntity<List<User>> getUsers() {
        return ResponseEntity.ok(service.getUsers());
     }

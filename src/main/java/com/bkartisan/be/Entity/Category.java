@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Category {
     @Id
     @Column()
@@ -32,7 +34,4 @@ public class Category {
     private String image;
     @Column
     private Boolean isSelected;
-
-    public Category() {
-    }
 }

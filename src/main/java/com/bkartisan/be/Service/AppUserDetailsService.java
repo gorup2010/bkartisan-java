@@ -22,7 +22,7 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = repo.findById(username);
         if (!user.isPresent()) {
-            System.out.println("User not found");
+            System.out.println("Not found user " + username);
             throw new UsernameNotFoundException("User not found");
         }
         return new UserPrincipal(user.get());

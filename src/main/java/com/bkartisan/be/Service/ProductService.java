@@ -21,7 +21,7 @@ public class ProductService {
 
     public List<Product> getProducts(String searchTerm, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return repo.findByNameContaining(searchTerm, pageRequest).getContent();
+        return repo.findByNameContaining(searchTerm, pageRequest);
     }
 
     public Product getProduct(Integer id) {

@@ -1,13 +1,19 @@
 package com.bkartisan.be.Entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.bkartisan.be.Dto.RegisterRequestDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -49,8 +55,9 @@ enum Role {
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class User {
+public class User implements Serializable {
     @Id
     @Column
     private String username;
@@ -81,5 +88,10 @@ public class User {
     @Column
     private String shopName;
 
-    public User() {};
+    public User(RegisterRequestDTO registerRequest) {
+        this.username = registerRequest.username();
+        this.password = registerRequest.password();
+        this.name = registerRequest.username();
+        this.email = registerRequest.email();
+    }
 }
