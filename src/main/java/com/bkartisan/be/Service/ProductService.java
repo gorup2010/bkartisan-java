@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Repository.ProductRepository;
+import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Entity.Product;
 
 @Service
@@ -26,5 +27,9 @@ public class ProductService {
 
     public Product getProduct(Integer id) {
         return repo.findById(id).orElse(null);
+    }
+
+    public List<Product> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
+        return repo.findProductsByFilters(filter);
     }
 }
