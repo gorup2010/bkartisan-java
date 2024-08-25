@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bkartisan.be.Entity.Product;
 
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends JpaRepository<Product, Integer>, ProductRepositoryCustom {
     List<Product> findByNameContaining(String searchTerm, Pageable pageable);
 }

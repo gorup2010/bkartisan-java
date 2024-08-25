@@ -5,10 +5,11 @@ import java.time.LocalDateTime;
 
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -16,39 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-enum LoginType {
-    NORMAL("normal"),
-    FACEBOOK("facebook"),
-    GOOGLE("google");
-
-    private final String value;
-
-    LoginType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-}
-
-enum Role {
-    BUYER("buyer"),
-    SELLER("seller"),
-    COLLABORATOR("collab"),
-    ADMIN("admin");
-
-    private final String value;
-
-    Role(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-}
 
 @Entity
 @Table(name = "user")
@@ -79,6 +47,7 @@ public class User implements Serializable {
     private LocalDateTime createdAt;
     @Column
     private String avatar;
+    // @Convert(converter = RoleConverter.class)
     @Column(nullable = false)
     private String role;
     @Column()
@@ -95,3 +64,30 @@ public class User implements Serializable {
         this.email = registerRequest.email();
     }
 }
+
+// @Converter(autoApply = true)
+// class RoleConverter implements AttributeConverter<Role, String> {
+
+//     @Override
+//     public String convertToDatabaseColumn(Role role) {
+//         if (role == null) {
+//             return null;
+//         }
+//         return role.getValue();
+//     }
+
+//     @Override
+//     public Role convertToEntityAttribute(String dbData) {
+//         if (dbData == null || dbData.isEmpty()) {
+//             return null;
+//         }
+
+//         for (Role role : Role.values()) {
+//             if (role.getValue().equalsIgnoreCase(dbData)) {
+//                 return role;
+//             }
+//         }
+
+//         throw new IllegalArgumentException("Unknown database value: " + dbData);
+//     }
+// }

@@ -1,10 +1,13 @@
 package com.bkartisan.be.Service;
 
 import java.security.Principal;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import com.bkartisan.be.Dto.LoginRequestDTO;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 import com.bkartisan.be.Entity.User;
+import com.bkartisan.be.Entity.UserPrincipal;
 import com.bkartisan.be.Repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +54,7 @@ public class UserService {
         repo.save(user);
     }
 
-    public void verify(LoginRequestDTO loginRequest, HttpServletRequest request,
+    public String verify(LoginRequestDTO loginRequest, HttpServletRequest request,
             HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
@@ -59,9 +63,15 @@ public class UserService {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
 
-        // // Update SecurityContextHolder and Strategy
+        // Update SecurityContextHolder and Strategy
         this.securityContextHolderStrategy.setContext(context);
         this.securityContextRepository.saveContext(context, request, response);
+
+        // Get role of user
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+        List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) user.getAuthorities();
+        String role = authorities.get(0).getAuthority();
+        return role;
     }
 
     public List<User> getUsers() {
