@@ -2,6 +2,7 @@ package com.bkartisan.be.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 import com.bkartisan.be.Constant.OrderConstants;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
@@ -22,6 +23,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<Product> findProductsByFilters(ProductFilterForAdminPageDTO filters) {
+        System.out.println(filters);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
@@ -42,6 +44,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         }
         if (filters.endPrice() != null) {
             predicates.add(cb.lessThanOrEqualTo(product.get("price"), filters.endPrice()));
+        }
+        if (filters.startDate() != null) {
+            predicates.add(cb.greaterThanOrEqualTo(product.get("approvedAt").as(LocalDate.class), filters.startDate()));
+        }
+        if (filters.endDate() != null) {
+            predicates.add(cb.lessThanOrEqualTo(product.get("approvedAt").as(LocalDate.class), filters.endDate()));
         }
 
         query.where(predicates.toArray(new Predicate[0]));
@@ -68,8 +76,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         // Handle pagination
         if (filters.offset() != null && filters.page() != null) {
-            int offset = Integer.parseInt(filters.offset().toString());
-            int page = Integer.parseInt(filters.page().toString());
+            int offset = filters.offset();
+            int page = filters.page();
             typedQuery.setFirstResult(offset * (page - 1));
             typedQuery.setMaxResults(offset);
         } else {
