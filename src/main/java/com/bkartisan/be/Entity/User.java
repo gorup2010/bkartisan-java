@@ -5,10 +5,7 @@ import java.time.LocalDateTime;
 
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

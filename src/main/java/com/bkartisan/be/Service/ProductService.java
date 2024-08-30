@@ -13,23 +13,23 @@ import com.bkartisan.be.Entity.Product;
 
 @Service
 public class ProductService {
-    ProductRepository repo;
+    ProductRepository productRepo;
 
     @Autowired
     public ProductService(ProductRepository repo) {
-        this.repo = repo;
+        this.productRepo = productRepo;
     }
 
     public List<Product> getProducts(String searchTerm, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return repo.findByNameContaining(searchTerm, pageRequest);
+        return productRepo.findByNameContaining(searchTerm, pageRequest);
     }
 
     public Product getProduct(Integer id) {
-        return repo.findById(id).orElse(null);
+        return productRepo.findById(id).orElse(null);
     }
 
     public List<Product> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
-        return repo.findProductsByFilters(filter);
+        return productRepo.findProductsByFilters(filter);
     }
 }

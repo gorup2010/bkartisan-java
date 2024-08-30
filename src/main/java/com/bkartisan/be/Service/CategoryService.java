@@ -12,14 +12,14 @@ import com.bkartisan.be.Entity.Category;
 public class CategoryService {
     final private int GIFT_ID = 85;
 
-    CategoryRepository repo;
+    CategoryRepository categoryRepo;
 
     @Autowired
-    public CategoryService(CategoryRepository repo) {
-        this.repo = repo;
+    public CategoryService(CategoryRepository categoryRepo) {
+        this.categoryRepo = categoryRepo;
     }
 
     public List<Category> getGifts() {
-        return repo.findByCategoryParent(GIFT_ID);
+        return categoryRepo.findByCategoryParent(GIFT_ID);
     }
 }
