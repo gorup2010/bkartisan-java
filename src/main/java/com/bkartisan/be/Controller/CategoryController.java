@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 
-    private CategoryService service;
+    private CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryService service) {
-        this.service = service;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping("gifts")
     public ResponseEntity<List<Category>> getGifts() {
-        List<Category> gifts = service.getGifts();
+        List<Category> gifts = categoryService.getGifts();
         return ResponseEntity.ok(gifts);
     }
 }

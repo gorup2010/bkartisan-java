@@ -25,14 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/v1")
 public class ProductController {
 
-    private ProductService service;
+    private ProductService productService;
     private ProductsItemForHomePageMapper itemForHomePageMapper;
     private ProductForAdminPageMapper productForAdminPageMapper;
 
     @Autowired
-    public ProductController(ProductService service, ProductsItemForHomePageMapper itemForHomePageMapper,
+    public ProductController(ProductService productService, ProductsItemForHomePageMapper itemForHomePageMapper,
             ProductForAdminPageMapper productForAdminPageMapper) {
-        this.service = service;
+        this.productService = productService;
         this.itemForHomePageMapper = itemForHomePageMapper;
         this.productForAdminPageMapper = productForAdminPageMapper;
     }
@@ -41,7 +41,7 @@ public class ProductController {
     public ResponseEntity<ProductsForHomePageDTO> getProductsForHomePage(
             @RequestParam(defaultValue = "") String searchTerm,
             @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer offset) {
-        List<Product> prods = service.getProducts(searchTerm, page, offset);
+        List<Product> prods = productService.getProducts(searchTerm, page, offset);
         ProductsForHomePageDTO prodsDTO = new ProductsForHomePageDTO(prods.size(),
                 prods.stream().map(itemForHomePageMapper).collect(Collectors.toList()));
         return ResponseEntity.ok(prodsDTO);
@@ -49,7 +49,7 @@ public class ProductController {
 
     @GetMapping("products/{id}")
     private ResponseEntity<Product> getProductDetails(@PathVariable Integer id) {
-        Product prod = service.getProduct(id);
+        Product prod = productService.getProduct(id);
         if (prod != null) {
             return ResponseEntity.ok(prod);
         } else {
@@ -59,7 +59,7 @@ public class ProductController {
 
     @GetMapping("products-list")
     private ResponseEntity<List<ProductForAdminPageDTO>> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
-        List<Product> prods = service.getProductsForAdminPage(filter);
+        List<Product> prods = productService.getProductsForAdminPage(filter);
         List<ProductForAdminPageDTO> prodsDTO = prods.stream().map(productForAdminPageMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(prodsDTO);

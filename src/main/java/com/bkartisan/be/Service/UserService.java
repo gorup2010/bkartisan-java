@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Dto.LoginRequestDTO;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
+import com.bkartisan.be.Dto.UserProfileDTO;
 import com.bkartisan.be.Entity.User;
 import com.bkartisan.be.Entity.UserPrincipal;
 import com.bkartisan.be.Repository.UserRepository;
@@ -30,7 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class UserService {
 
-    private UserRepository repo;
+    private UserRepository userRepo;
     private AuthenticationManager authenticationManager;
     private PasswordEncoder encoder;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
@@ -38,20 +39,20 @@ public class UserService {
             .getContextHolderStrategy();
 
     @Autowired
-    UserService(UserRepository repo, AuthenticationManager authenticationManager, PasswordEncoder encoder) {
+    UserService(UserRepository userRepo, AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         this.encoder = encoder;
-        this.repo = repo;
+        this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
     }
 
     public void registerUser(RegisterRequestDTO registerRequest) {
-        if (repo.existsById(registerRequest.username())) {
+        if (userRepo.existsById(registerRequest.username())) {
             throw new RuntimeException("User already exists");
         }
         String encryptedPassword = encoder.encode(registerRequest.password());
         registerRequest.setPassword(encryptedPassword);
         User user = new User(registerRequest);
-        repo.save(user);
+        userRepo.save(user);
     }
 
     public String verify(LoginRequestDTO loginRequest, HttpServletRequest request,
@@ -75,11 +76,11 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return repo.findAll();
+        return userRepo.findAll();
     }
 
     public User getUserByUsername(String username) {
-        return repo.findById(username).orElse(null);
+        return userRepo.findById(username).orElse(null);
     }
 
 }
