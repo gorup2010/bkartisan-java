@@ -13,11 +13,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 
@@ -47,12 +47,13 @@ public class AuthController {
         return ResponseEntity.ok(role);
     }
 
-    @GetMapping("login/success")
+    @GetMapping("profile")
     public ResponseEntity<UserProfileDTO> getUserProfile(Principal principal) throws Exception {
-        String username = principal.getName();
-        if (username == null) {
-            throw new Exception("User not found");
+        if (principal == null || principal.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        
+        String username = principal.getName();
         User user = userService.getUserByUsername(username);
         Integer totalPrice = cartService.getTotalPrice(username);
         Integer cartItems = cartService.getTotalItems(username);

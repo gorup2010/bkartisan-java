@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
@@ -23,9 +24,9 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("gifts")
-    public ResponseEntity<List<Category>> getGifts() {
-        List<Category> gifts = categoryService.getGifts();
+    @GetMapping("{level}")
+    public ResponseEntity<List<Category>> getCategoryByLevel(@PathVariable Integer level) {
+        List<Category> gifts = categoryService.getCategoryByLevel(level);
         return ResponseEntity.ok(gifts);
     }
 }
