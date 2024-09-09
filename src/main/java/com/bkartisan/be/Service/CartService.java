@@ -1,5 +1,6 @@
 package com.bkartisan.be.Service;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class CartService {
             }).collect(Collectors.summingInt(Integer::intValue));
 
             return totalPrice;
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             System.out.println("Error in getTotalPrice: " + e.getMessage());
             throw e;
         }
@@ -59,7 +60,8 @@ public class CartService {
 
     public Integer getTotalItems(String username) {
         String key = ID_PREFIX + username;
-        return redisOperations.opsForHash().entries(key).size();
+        return redisOperations.opsForHash().entries(key).values().stream()
+                .collect(Collectors.summingInt(e -> Integer.parseInt(e.toString())));
     }
 
     // public List<Map<String, Integer>> getCartItems(String username) {
@@ -69,7 +71,11 @@ public class CartService {
 
     public void addProductToCart(String username, Integer productID, Integer quantity) {
         String key = ID_PREFIX + username;
-        if (redisOperations.opsForHash().hasKey(key, productID.toString())) {
+        if (!redisOperations.hasKey(key)) {
+            redisOperations.opsForHash().put(key, productID.toString(),
+                    quantity.toString());
+            redisOperations.expire(key, Duration.ofDays(7));
+        } else if (redisOperations.opsForHash().hasKey(key, productID.toString())) {
             redisOperations.opsForHash().increment(key, productID.toString(), quantity);
         } else {
             redisOperations.opsForHash().put(key, productID.toString(),

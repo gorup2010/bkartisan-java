@@ -23,7 +23,6 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<Product> findProductsByFilters(ProductFilterForAdminPageDTO filters) {
-        System.out.println(filters);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);

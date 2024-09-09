@@ -2,15 +2,17 @@ package com.bkartisan.be.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bkartisan.be.Dto.ProductDetailDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductForAdminPageMapper;
 import com.bkartisan.be.Dto.ProductsForHomePageDTO;
 import com.bkartisan.be.Dto.ProductsItemForHomePageMapper;
+import com.bkartisan.be.Entity.Category;
 import com.bkartisan.be.Entity.Product;
+import com.bkartisan.be.Service.CategoryService;
 import com.bkartisan.be.Service.ProductService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +28,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProductController {
 
     private ProductService productService;
+    private CategoryService categoryService;
     private ProductsItemForHomePageMapper itemForHomePageMapper;
     private ProductForAdminPageMapper productForAdminPageMapper;
 
     @Autowired
-    public ProductController(ProductService productService, ProductsItemForHomePageMapper itemForHomePageMapper,
+    public ProductController(ProductService productService, CategoryService categoryService,
+            ProductsItemForHomePageMapper itemForHomePageMapper,
             ProductForAdminPageMapper productForAdminPageMapper) {
+        this.categoryService = categoryService;
         this.productService = productService;
         this.itemForHomePageMapper = itemForHomePageMapper;
         this.productForAdminPageMapper = productForAdminPageMapper;
@@ -48,13 +53,12 @@ public class ProductController {
     }
 
     @GetMapping("products/{id}")
-    private ResponseEntity<Product> getProductDetails(@PathVariable Integer id) {
+    private ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Integer id) {
         Product prod = productService.getProduct(id);
-        if (prod != null) {
-            return ResponseEntity.ok(prod);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        List<Category> categories = categoryService.getCategoryHierachies(prod.getCategory());
+        System.out.println(categories);
+        ProductDetailDTO prodDTO = new ProductDetailDTO(prod, categories);
+        return ResponseEntity.ok(prodDTO);
     }
 
     @GetMapping("products-list")

@@ -1,6 +1,5 @@
 package com.bkartisan.be.Entity;
 
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -11,7 +11,7 @@ public class ProductForAdminPageMapper implements Function<Product, ProductForAd
 
     @Override
     public ProductForAdminPageDTO apply(Product t) {
-        return new ProductForAdminPageDTO(t.getProductId(), t.getCoverImage(), t.getName(), t.getSeller(), t.getPrice(),
+        return new ProductForAdminPageDTO(t.getProductId(), t.getCoverImage(), t.getName(), t.getSeller().getName(), t.getPrice(),
                 t.getApprovedAt());
     }
 }
