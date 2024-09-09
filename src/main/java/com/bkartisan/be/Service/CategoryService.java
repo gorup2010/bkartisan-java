@@ -26,4 +26,8 @@ public class CategoryService {
     public List<Category> getCategoryByLevel(Integer level) {
         return categoryRepo.findByLevel(level);
     }
+
+    public List<Category> getCategoryHierachies(Integer categoryId) {
+        return categoryRepo.getCategoryHierachies(categoryId);
+    }
 }

@@ -11,7 +11,7 @@ public class ProductsItemForHomePageMapper implements Function<Product, Products
     @Override
     public ProductsItemForHomePage apply(Product product) {
         return new ProductsItemForHomePage(product.getProductId(), product.getPrice(), product.getName(),
-                product.getSeller(), product.getCoverImage(), product.getNumberOfStar(), product.getNumberOfRating(),
+                product.getSeller().getName(), product.getCoverImage(), product.getNumberOfStar(), product.getNumberOfRating(),
                 product.getDiscount());
     }
 }

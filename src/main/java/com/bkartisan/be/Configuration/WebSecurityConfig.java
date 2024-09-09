@@ -57,7 +57,7 @@ public class WebSecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("login", "register", "profile",
-                                "api/v1/products", "api/v1/categories/**")
+                                "api/v1/products/**", "api/v1/categories/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(httpConfig -> httpConfig.disable())

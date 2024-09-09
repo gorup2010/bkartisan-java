@@ -1,8 +1,5 @@
 package com.bkartisan.be.Service;
 
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Dto.LoginRequestDTO;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
-import com.bkartisan.be.Dto.UserProfileDTO;
 import com.bkartisan.be.Entity.User;
 import com.bkartisan.be.Entity.UserPrincipal;
 import com.bkartisan.be.Repository.UserRepository;
