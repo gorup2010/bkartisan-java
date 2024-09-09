@@ -6,15 +6,18 @@ import com.bkartisan.be.Dto.LoginRequestDTO;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 import com.bkartisan.be.Dto.UserProfileDTO;
 import com.bkartisan.be.Entity.User;
+import com.bkartisan.be.ExceptionHandler.BadRequestException;
 import com.bkartisan.be.Service.CartService;
 import com.bkartisan.be.Service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +38,11 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterRequestDTO user) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterRequestDTO user, BindingResult result) {
+        if (result.hasErrors()) {
+            throw new BadRequestException(result.getAllErrors());
+        }
+
         userService.registerUser(user);
         return ResponseEntity.ok("Registered successfully!");
     }

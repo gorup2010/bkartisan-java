@@ -19,6 +19,7 @@ import com.bkartisan.be.Dto.LoginRequestDTO;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 import com.bkartisan.be.Entity.User;
 import com.bkartisan.be.Entity.UserPrincipal;
+import com.bkartisan.be.ExceptionHandler.UserNameExistsException;
 import com.bkartisan.be.Repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,8 +43,9 @@ public class UserService {
     }
 
     public void registerUser(RegisterRequestDTO registerRequest) {
+        System.out.println(registerRequest);
         if (userRepo.existsById(registerRequest.username())) {
-            throw new RuntimeException("User already exists");
+            throw new UserNameExistsException();
         }
         String encryptedPassword = encoder.encode(registerRequest.password());
         registerRequest.setPassword(encryptedPassword);
