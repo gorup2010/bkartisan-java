@@ -42,7 +42,7 @@ public class ProductLink {
     @Column()
     private String type;
 
-    @Column()
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @ManyToOne()

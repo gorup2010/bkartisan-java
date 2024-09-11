@@ -56,10 +56,10 @@ public class WebSecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("login", "register", "profile",
+                                "v3/**",  // Allow access to Swagger docs
                                 "api/v1/products/**", "api/v1/categories/**")
                         .permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(httpConfig -> httpConfig.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .build();
     }

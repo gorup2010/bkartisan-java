@@ -35,7 +35,7 @@ public class Comment {
 
     @Column
     private String content;
-    @Column
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column
     private Integer numberOfUpvotes;

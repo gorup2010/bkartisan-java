@@ -6,6 +6,7 @@ import com.bkartisan.be.Entity.Product;
 import com.bkartisan.be.Entity.ProductLink;
 import com.bkartisan.be.Entity.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.util.List;
@@ -13,9 +14,15 @@ import java.util.List;
 @Getter
 public class ProductDetailDTO {
 
+    /**
+     * Including the information of product image/video:
+     * - link: the URL of asset.
+     * - type: image or video.
+     */
     @Getter
     private class ProductLinkDTO {
         String link;
+        @Schema(description = "image or video")
         String type;
 
         ProductLinkDTO(ProductLink link) {
@@ -24,6 +31,11 @@ public class ProductDetailDTO {
         }
     }
 
+    /**
+     * Including the information of comment:
+     * - data: the comment itself.
+     * - replies: the replies of the comment.
+     */
     @Getter
     private class CommentDTO {
         Comment data;
@@ -49,9 +61,9 @@ public class ProductDetailDTO {
     }
 
     private String name;
-    private List<ProductLinkDTO> assets;
+    private List<ProductLinkDTO> assets;            // Including all product images
     private List<CommentDTO> comments;
-    private List<CategoryDTO> categories;
+    private List<CategoryDTO> categories;           // The product category itself and all of its accestor categories.
     private String introduction;
     private String description;
     private String seller;
@@ -66,6 +78,7 @@ public class ProductDetailDTO {
     
 
     private void setComments(List<Comment> comments) {
+        // Filter out the comments that have no replies. Then select those comment and them replies to send to front-end.
         this.comments = comments.stream().filter(comment -> !comment.getChildComments().isEmpty()).map(CommentDTO::new).toList();
     }
 
