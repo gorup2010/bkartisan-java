@@ -57,7 +57,7 @@ public class Product {
     @JoinColumn(name = "seller")
     private User seller;
 
-    @Column()
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column()

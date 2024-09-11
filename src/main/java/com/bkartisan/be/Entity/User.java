@@ -3,6 +3,7 @@ package com.bkartisan.be.Entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.bkartisan.be.Constant.UserRole;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
 
 import jakarta.persistence.Column;
@@ -24,34 +25,34 @@ import lombok.ToString;
 @ToString
 public class User implements Serializable {
     @Id
-    @Column
+    @Column(length = 50, nullable = false, unique = true)
     private String username;
-    @Column
+    @Column(nullable = false)
     private String password;
-    @Column
+    @Column(length = 10, nullable = false)
     private String name;
-    @Column
+    @Column(length = 50, nullable = false)
     private String email;
     @Column
     private String address;
-    @Column
+    @Column(length = 30)
     private String numPhone;
     @Column
     private Character gender;
     @Column
     private String loginType;
-    @Column(nullable = true)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
     @Column
     private String avatar;
     // @Convert(converter = RoleConverter.class)
     @Column(nullable = false)
-    private String role;
+    private String role = UserRole.BUYER;
     @Column()
     private LocalDateTime lockUntil;
-    @Column
+    @Column(length = 50)
     private String nation;
-    @Column
+    @Column(length = 50)
     private String shopName;
 
     public User(RegisterRequestDTO registerRequest) {

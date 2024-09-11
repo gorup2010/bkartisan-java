@@ -29,7 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("users")
-    @Secured("admin")
+    //@Secured("admin")
     public ResponseEntity<List<User>> getUsers() {
        return ResponseEntity.ok(service.getUsers());
     }

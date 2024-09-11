@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bkartisan.be.Dto.ProductDetailDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
-import com.bkartisan.be.Dto.ProductForAdminPageDTO;
+import com.bkartisan.be.Dto.ProductsForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductForAdminPageMapper;
 import com.bkartisan.be.Dto.ProductsForHomePageDTO;
 import com.bkartisan.be.Dto.ProductsItemForHomePageMapper;
@@ -62,9 +62,9 @@ public class ProductController {
     }
 
     @GetMapping("products-list")
-    private ResponseEntity<List<ProductForAdminPageDTO>> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
+    private ResponseEntity<List<ProductsForAdminPageDTO>> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
         List<Product> prods = productService.getProductsForAdminPage(filter);
-        List<ProductForAdminPageDTO> prodsDTO = prods.stream().map(productForAdminPageMapper)
+        List<ProductsForAdminPageDTO> prodsDTO = prods.stream().map(productForAdminPageMapper)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(prodsDTO);
     }

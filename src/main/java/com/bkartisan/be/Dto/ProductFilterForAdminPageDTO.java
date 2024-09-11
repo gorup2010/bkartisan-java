@@ -2,6 +2,7 @@ package com.bkartisan.be.Dto;
 
 import java.time.LocalDate;
 
+
 public record ProductFilterForAdminPageDTO(
         String product,
         String seller,

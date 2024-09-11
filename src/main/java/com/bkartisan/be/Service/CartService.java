@@ -33,6 +33,7 @@ public class CartService {
         return cart;
     }
 
+    
     public Integer getTotalPrice(String username) {
         String key = ID_PREFIX + username;
         // No items in cart - return 0
