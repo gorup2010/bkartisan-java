@@ -21,9 +21,9 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public List<Product> getProducts(String searchTerm, Integer page, Integer size) {
+    public List<Product> getProducts(String searchTerm, Integer category, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return productRepo.findByNameContaining(searchTerm, pageRequest);
+        return productRepo.findByNameAndCategory(searchTerm, category, pageRequest);
     }
 
     public Product getProduct(Integer id) {

@@ -55,11 +55,12 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login", "register", "profile",
-                                "v3/**",  // Allow access to Swagger docs
+                        .requestMatchers("login", "register", "profile", "logout-success",
+                                "v3/**", // Allow access to Swagger docs
                                 "api/v1/products/**", "api/v1/categories/**")
                         .permitAll()
                         .anyRequest().authenticated())
+                .logout(logout -> logout.logoutSuccessUrl("/logout-success"))       // If logging out success, redirect to logout-success
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .build();
     }

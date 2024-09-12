@@ -19,6 +19,10 @@ public class CategoryService {
         this.categoryRepo = categoryRepo;
     }
 
+    public List<Category> getCategoryChildren(Integer parentId) {
+        return categoryRepo.findByCategoryParent(parentId);
+    }
+
     public List<Category> getGifts() {
         return categoryRepo.findByCategoryParent(GIFT_ID);
     }
