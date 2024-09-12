@@ -109,11 +109,25 @@ public class AuthController {
 
 
 
+    @Operation(summary = "Log out a user", tags = { "Authentication" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Sign out successfully and return success message")
+    })
 
+    /**
+     * Spring have a default logout handler (POST /logout) and 
+     * it will redirect to user to the logout successful path so we need to handle it.
+     */
+    @GetMapping("logout-success")
+    public ResponseEntity<String> logOut() {
+        return ResponseEntity.ok("Logged out successfully!");
+    }
+
+
+
+    // TODO: Change password of user.
     @PostMapping("password")
-    public String changePassword() {
+    public void changePassword() {
 
-        return "entity";
     }
 
 }

@@ -9,11 +9,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @Configuration
 public class RedisConfig {
 
-  // @Bean
-  // LettuceConnectionFactory connectionFactory() {
-  // return new LettuceConnectionFactory();
-  // }
-
   @Bean
   StringRedisTemplate redisTemplate(RedisConnectionFactory connectionFactory) {
     StringRedisTemplate template = new StringRedisTemplate();

@@ -28,18 +28,18 @@ public class HomeController {
         return "Welcome to " + request.getSession().getId();
     }
 
-    @GetMapping("users")
-    //@Secured("admin")
-    public ResponseEntity<List<User>> getUsers() {
-       return ResponseEntity.ok(service.getUsers());
-    }
+    // @GetMapping("users")
+    // //@Secured("admin")
+    // public ResponseEntity<List<User>> getUsers() {
+    //    return ResponseEntity.ok(service.getUsers());
+    // }
     
-    @GetMapping("users/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
-        User user = service.getUserByUsername(username);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
-    }
+    // @GetMapping("users/{username}")
+    // public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+    //     User user = service.getUserByUsername(username);
+    //     if (user == null) {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    //     return ResponseEntity.ok(user);
+    // }
 }
