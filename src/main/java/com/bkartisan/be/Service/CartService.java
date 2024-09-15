@@ -2,12 +2,20 @@ package com.bkartisan.be.Service;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.bkartisan.be.Dto.CartInformationDTO;
+import com.bkartisan.be.Dto.CartProductDTO;
+import com.bkartisan.be.Entity.CartItem;
 import com.bkartisan.be.Entity.Product;
 
 @Service
@@ -15,25 +23,42 @@ public class CartService {
 
     private String ID_PREFIX = "cart:";
 
-    private StringRedisTemplate redisOperations;
+    private RedisTemplate<String, Object> redisOperations;
+    private HashOperations<String, Integer, CartItem> hashOperations;
     private ProductService productService;
 
     @Autowired
-    public CartService(StringRedisTemplate redisOperations, ProductService productService) {
+    public CartService(RedisTemplate<String, Object> redisOperations, ProductService productService) {
         this.productService = productService;
         this.redisOperations = redisOperations;
+        this.hashOperations = redisOperations.opsForHash();
     }
 
-    public Map<String, Integer> getCart(String username) {
+    // TODO: Handle NumberFormatException when parseInt() fails
+    public CartInformationDTO getCart(String username) {
         String key = ID_PREFIX + username;
-        Map<String, Integer> cart = redisOperations.opsForHash().entries(key).entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().toString(),
-                        entry -> Integer.valueOf(entry.getValue().toString())));
-        return cart;
+        CartInformationDTO cartInfo = new CartInformationDTO();
+
+        Set<Entry<Integer, CartItem>> entries = hashOperations.entries(key).entrySet();
+
+        try {
+            for (Entry<Integer,CartItem> entry : entries) {
+                Integer productId = entry.getKey();
+                CartItem item = entry.getValue();
+                Product product = productService.getProduct(productId);
+    
+                cartInfo.setTotalPrice(cartInfo.getTotalPrice() + item.getQuantity() * product.getPrice());
+                cartInfo.setNumberOfItems(cartInfo.getNumberOfItems() + item.getQuantity());
+                cartInfo.getItems().add(new CartProductDTO(product, item));
+            }
+    
+            return cartInfo;
+        } catch (NumberFormatException e) {
+            System.out.println("Error in getCart: " + e.getMessage());
+            throw e;
+        }
     }
 
-    
     public Integer getTotalPrice(String username) {
         String key = ID_PREFIX + username;
         // No items in cart - return 0
@@ -42,18 +67,22 @@ public class CartService {
         }
 
         try {
-            Map<?, ?> entries = redisOperations.opsForHash().entries(key);
+            Map<Integer, CartItem> entries = hashOperations.entries(key);
 
             // First, map to a stream of price of each item. Then sum it up with
             // Collectors.summingInt.
             Integer totalPrice = entries.entrySet().stream().map(e -> {
                 Product prod = productService.getProduct(Integer.parseInt(e.getKey().toString()));
                 Integer price = prod.getPrice();
-                return price * (Integer) Integer.parseInt(e.getValue().toString());
+
+                CartItem item = e.getValue();
+                Integer quantity = item.getQuantity();
+
+                return price * quantity;
             }).collect(Collectors.summingInt(Integer::intValue));
 
             return totalPrice;
-        } catch (ClassCastException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Error in getTotalPrice: " + e.getMessage());
             throw e;
         }
@@ -61,26 +90,38 @@ public class CartService {
 
     public Integer getTotalItems(String username) {
         String key = ID_PREFIX + username;
-        return redisOperations.opsForHash().entries(key).values().stream()
-                .collect(Collectors.summingInt(e -> Integer.parseInt(e.toString())));
+        return hashOperations.entries(key).values().stream()
+                .collect(Collectors.summingInt(e -> e.getQuantity()));
     }
-
-    // public List<Map<String, Integer>> getCartItems(String username) {
-    // return
-    // redisOperations.opsForHash().values(username).stream().map(CartItem::new).collect(Collectors.toList());
-    // }
 
     public void addProductToCart(String username, Integer productID, Integer quantity) {
         String key = ID_PREFIX + username;
+
+        // If the user cart haven't existed in redis yet, then create a new one and set expire time to 7 days
         if (!redisOperations.hasKey(key)) {
-            redisOperations.opsForHash().put(key, productID.toString(),
-                    quantity.toString());
+            hashOperations.put(key, productID, new CartItem("", quantity));
             redisOperations.expire(key, Duration.ofDays(7));
-        } else if (redisOperations.opsForHash().hasKey(key, productID.toString())) {
-            redisOperations.opsForHash().increment(key, productID.toString(), quantity);
-        } else {
-            redisOperations.opsForHash().put(key, productID.toString(),
-                    quantity.toString());
         }
+        // If the cart exist and the product is in cart, then increment the quantity
+        else if (hashOperations.hasKey(key, productID)) {
+            CartItem currentItem = hashOperations.get(key, productID);
+            currentItem.setQuantity(currentItem.getQuantity() + quantity);
+            hashOperations.put(key, productID, currentItem);
+        }
+        // If the cart exist and the product isn't in cart, then put product into cart
+        else {
+            CartItem newItem = new CartItem("", quantity);
+            hashOperations.put(key, productID, newItem);
+        }
+    }
+
+    public void removeProductFromCart(String username, Integer productID) {
+        String key = ID_PREFIX + username;
+        hashOperations.delete(key, productID);
+    }
+
+    public void updateProductOnCart(String username, Integer productID, Integer quantity, String note) {
+        String key = ID_PREFIX + username;
+        hashOperations.put(key, productID, new CartItem(note, quantity));
     }
 }

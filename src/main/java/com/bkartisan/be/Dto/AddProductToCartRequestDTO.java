@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-public record CartItemDTO(
+public record AddProductToCartRequestDTO(
     Integer productId,
     Integer quantity
 ) {

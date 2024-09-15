@@ -32,7 +32,12 @@ public class CategoryController {
 
 
 
-    @Operation()
+    @Operation(summary = "Get all children of a category", tags = { "Category" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return a list of categories or empty list if the category has no children", content = {
+            @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = Category.class))
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
     // TODO: validate request body
     @GetMapping("{categoryId}/children")
     public ResponseEntity<List<Category>> getCategoryChildren(@PathVariable Integer categoryId) {
