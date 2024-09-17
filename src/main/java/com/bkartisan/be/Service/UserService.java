@@ -21,12 +21,17 @@ import com.bkartisan.be.Entity.User;
 import com.bkartisan.be.Entity.UserPrincipal;
 import com.bkartisan.be.ExceptionHandler.UserNameExistsException;
 import com.bkartisan.be.Repository.UserRepository;
+import com.bkartisan.be.Util.EmailUtil;
+import com.bkartisan.be.Util.OtpUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class UserService {
+
+    private OtpUtil otpUtil;
+    private EmailUtil emailUtil;
 
     private UserRepository userRepo;
     private AuthenticationManager authenticationManager;
@@ -36,7 +41,9 @@ public class UserService {
             .getContextHolderStrategy();
 
     @Autowired
-    UserService(UserRepository userRepo, AuthenticationManager authenticationManager, PasswordEncoder encoder) {
+    UserService(UserRepository userRepo, AuthenticationManager authenticationManager, PasswordEncoder encoder, OtpUtil otpUtil, EmailUtil emailUtil) {
+        this.otpUtil = otpUtil;
+        this.emailUtil = emailUtil;
         this.encoder = encoder;
         this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
@@ -71,6 +78,10 @@ public class UserService {
         List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) user.getAuthorities();
         String role = authorities.get(0).getAuthority();
         return role;
+    }
+
+    public void registerSeller() {
+        emailUtil.sendVerificationEmailToSeller("lauhoi2010@gmail.com", 10000101);
     }
 
     public List<User> getUsers() {
