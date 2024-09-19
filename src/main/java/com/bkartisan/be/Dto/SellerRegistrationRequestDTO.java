@@ -17,7 +17,7 @@ public class SellerRegistrationRequestDTO {
     private String name;
 
     @Schema(description = "The email of the seller and will receive the verification email", example = "SaulGoodman@gmail.com")
-    @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+    @Email(message = "Email is not valid")
     private String email;
 
     @Schema(example = "TP Hồ Chí Minh")

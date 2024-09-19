@@ -24,19 +24,17 @@ public class EmailUtil {
         this.fileLoader = fileLoader;
     }
 
-    // TODO: make sending email asynchronous
     @Async
-    public void sendVerificationEmailToSeller(String receiver, Integer otp) {
+    public void sendVerificationEmailToSeller(String receiver, String otp) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
 
         try {
             String htmlMsg = fileLoader.loadHtmlTemplateInString();
             htmlMsg = htmlMsg.replace("{receiver}", receiver);
-            htmlMsg = htmlMsg.replace("{otp}", otp.toString());
+            htmlMsg = htmlMsg.replace("{otp}", otp);
 
 
-            // mimeMessageHelper.setFrom();
             mimeMessageHelper.setTo(receiver);
             mimeMessageHelper.setSubject("[BK Artisan] Mã xác nhận trở thành người bán");
             mimeMessageHelper.setText(htmlMsg, true);

@@ -1,95 +1,82 @@
 package com.bkartisan.be.Service;
 
 import java.util.List;
+import java.time.Duration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.bkartisan.be.Dto.LoginRequestDTO;
-import com.bkartisan.be.Dto.RegisterRequestDTO;
+import com.bkartisan.be.Dto.SellerRegistrationRequestDTO;
 import com.bkartisan.be.Entity.User;
-import com.bkartisan.be.Entity.UserPrincipal;
-import com.bkartisan.be.ExceptionHandler.UserNameExistsException;
+import com.bkartisan.be.ExceptionHandler.InvalidVerificationCodeException;
 import com.bkartisan.be.Repository.UserRepository;
 import com.bkartisan.be.Util.EmailUtil;
 import com.bkartisan.be.Util.OtpUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Service
 public class UserService {
 
+    private String OTP_EMAIL_PREFIX = "email:otp:";
+
     private OtpUtil otpUtil;
     private EmailUtil emailUtil;
-
+    private RedisTemplate<String, String> redisOperations;
+    private SetOperations<String, String> setOperations;
     private UserRepository userRepo;
-    private AuthenticationManager authenticationManager;
-    private PasswordEncoder encoder;
-    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
-            .getContextHolderStrategy();
 
     @Autowired
-    UserService(UserRepository userRepo, AuthenticationManager authenticationManager, PasswordEncoder encoder, OtpUtil otpUtil, EmailUtil emailUtil) {
+    UserService(UserRepository userRepo, OtpUtil otpUtil, EmailUtil emailUtil,
+            RedisTemplate<String, String> redisOperations) {
         this.otpUtil = otpUtil;
         this.emailUtil = emailUtil;
-        this.encoder = encoder;
         this.userRepo = userRepo;
-        this.authenticationManager = authenticationManager;
+        this.redisOperations = redisOperations;
+        this.setOperations = redisOperations.opsForSet();
     }
 
-    public void registerUser(RegisterRequestDTO registerRequest) {
-        System.out.println(registerRequest);
-        if (userRepo.existsById(registerRequest.username())) {
-            throw new UserNameExistsException();
+    // TODO: invalidate the existing session 
+    @Transactional
+    public void registerSeller(SellerRegistrationRequestDTO sellerRegistrationRequestDTO, String username) {
+        String key = OTP_EMAIL_PREFIX + sellerRegistrationRequestDTO.getEmail();
+        if (setOperations.isMember(key, sellerRegistrationRequestDTO.getEmailCode())) {
+            userRepo.updateSellerInfo(
+                    sellerRegistrationRequestDTO.getShopName(),
+                    sellerRegistrationRequestDTO.getName(),
+                    sellerRegistrationRequestDTO.getEmail(),
+                    sellerRegistrationRequestDTO.getAddress(),
+                    sellerRegistrationRequestDTO.getNumPhone(),
+                    sellerRegistrationRequestDTO.getNation(),
+                    username
+                );
+
+            redisOperations.delete(key);
+        } else {
+            throw new InvalidVerificationCodeException();
         }
-        String encryptedPassword = encoder.encode(registerRequest.password());
-        registerRequest.setPassword(encryptedPassword);
-        User user = new User(registerRequest);
-        userRepo.save(user);
     }
 
-    public String verify(LoginRequestDTO loginRequest, HttpServletRequest request,
-            HttpServletResponse response) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
+    // Before changing user role to seller, we need verify emails they provide.
+    public void verifySellerEmail(String email) {
+        String otp = otpUtil.generateOtp();
 
-        // Create a new context
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
+        /**
+         * Note that:
+         * - Each time user send a request and there already exist an OTP for them in
+         * redis, expiration time will be reset to 1 hour.
+         * - One user can have many OTPs in redis.
+         * Currently, we allow this behavoir but maybe in future we will change it.
+         */
+        String key = OTP_EMAIL_PREFIX + email;
+        setOperations.add(key, otp);
+        redisOperations.expire(key, Duration.ofHours(1));
 
-        // Update SecurityContextHolder and Strategy
-        this.securityContextHolderStrategy.setContext(context);
-        this.securityContextRepository.saveContext(context, request, response);
-
-        // Get role of user
-        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
-        List<? extends GrantedAuthority> authorities = (List<? extends GrantedAuthority>) user.getAuthorities();
-        String role = authorities.get(0).getAuthority();
-        return role;
-    }
-
-    public void registerSeller() {
-        emailUtil.sendVerificationEmailToSeller("lauhoi2010@gmail.com", 10000101);
+        emailUtil.sendVerificationEmailToSeller(email, otp);
     }
 
     public List<User> getUsers() {
         return userRepo.findAll();
     }
-
-    public User getUserByUsername(String username) {
-        return userRepo.findById(username).orElse(null);
-    }
-
 }
