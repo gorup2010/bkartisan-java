@@ -8,7 +8,7 @@ import com.bkartisan.be.Dto.UserProfileDTO;
 import com.bkartisan.be.Entity.User;
 import com.bkartisan.be.ExceptionHandler.BadRequestException;
 import com.bkartisan.be.Service.CartService;
-import com.bkartisan.be.Service.UserService;
+import com.bkartisan.be.Service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,12 +33,12 @@ import java.security.Principal;
 @RestController
 public class AuthController {
 
-    private UserService userService;
+    private AuthService authService;
     private CartService cartService;
 
     @Autowired
-    public AuthController(UserService userService, CartService cartService) {
-        this.userService = userService;
+    public AuthController(AuthService authService, CartService cartService) {
+        this.authService = authService;
         this.cartService = cartService;
     }
 
@@ -61,7 +61,7 @@ public class AuthController {
             throw new BadRequestException(result.getAllErrors());
         }
 
-        userService.registerUser(user);
+        authService.registerUser(user);
         return ResponseEntity.ok("Registered successfully!");
     }
 
@@ -79,7 +79,7 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<String> loginUser(@Valid @RequestBody LoginRequestDTO user, HttpServletRequest request,
             HttpServletResponse response) {
-        String role = userService.verify(user, request, response);
+        String role = authService.verify(user, request, response);
         return ResponseEntity.ok(role);
     }
 
@@ -101,7 +101,7 @@ public class AuthController {
         }
 
         String username = principal.getName();
-        User user = userService.getUserByUsername(username);
+        User user = authService.getUserByUsername(username);
         Integer totalPrice = cartService.getTotalPrice(username);           // Total price of items in cart
         Integer cartItems = cartService.getTotalItems(username);            // Total number of items in cart
         return ResponseEntity.ok(new UserProfileDTO(user, totalPrice, cartItems));

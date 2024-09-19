@@ -2,15 +2,23 @@ package com.bkartisan.be.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bkartisan.be.Dto.SellerRegistrationRequestDTO;
 import com.bkartisan.be.Service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import io.swagger.v3.oas.annotations.media.Content;
+
+import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 
@@ -26,6 +34,21 @@ public class UserController {
     }
 
 
+    @Operation(summary = "Verify seller email", tags = { "User" }, responses = {
+        @ApiResponse(responseCode = "204", description = "Successful operation", content = @Content()),
+        @ApiResponse(responseCode = "401", description = "Unauthorized request", content = @Content()),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Email", required = true, content = @Content(mediaType = "text/plain"))
+
+    @PostMapping("user/seller-code")
+    @Secured("buyer")
+    public ResponseEntity<Void> verifySellerEmail(@Valid @Email @RequestBody String email) {
+        userService.verifySellerEmail(email);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 
     @Operation(summary = "Change user from buyer to seller", tags = { "User" }, responses = {
@@ -35,10 +58,9 @@ public class UserController {
     })
 
     @PatchMapping("user/seller")
-    public ResponseEntity<Void> registerSeller() {
-        long begin = System.currentTimeMillis();
-        userService.registerSeller();
-        System.out.println("Time taken: " + (begin - System.currentTimeMillis()));
+    @Secured("buyer")
+    public ResponseEntity<Void> registerSeller(@Valid @RequestBody SellerRegistrationRequestDTO sellerRegistrationRequestDTO, Principal principal) {
+        userService.registerSeller(sellerRegistrationRequestDTO, principal.getName());
         return ResponseEntity.noContent().build();
     }
     
