@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-public record ProductsItemForHomePage(
+public record ProductForHomePageDTO(
         Integer productId,
         Integer price,
         String name,

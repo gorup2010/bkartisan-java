@@ -45,7 +45,6 @@ public class User implements Serializable {
     private LocalDateTime createdAt;
     @Column
     private String avatar;
-    // @Convert(converter = RoleConverter.class)
     @Column(nullable = false)
     private String role = UserRole.BUYER;
     @Column()
@@ -62,30 +61,3 @@ public class User implements Serializable {
         this.email = registerRequest.email();
     }
 }
-
-// @Converter(autoApply = true)
-// class RoleConverter implements AttributeConverter<Role, String> {
-
-//     @Override
-//     public String convertToDatabaseColumn(Role role) {
-//         if (role == null) {
-//             return null;
-//         }
-//         return role.getValue();
-//     }
-
-//     @Override
-//     public Role convertToEntityAttribute(String dbData) {
-//         if (dbData == null || dbData.isEmpty()) {
-//             return null;
-//         }
-
-//         for (Role role : Role.values()) {
-//             if (role.getValue().equalsIgnoreCase(dbData)) {
-//                 return role;
-//             }
-//         }
-
-//         throw new IllegalArgumentException("Unknown database value: " + dbData);
-//     }
-// }

@@ -3,7 +3,12 @@ package com.bkartisan.be.Entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+import com.bkartisan.be.Constant.ProductStatus;
+import com.bkartisan.be.Converter.ProductStatusConverter;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -48,7 +53,7 @@ public class Product {
     private String material;
 
     @Column()
-    private String quantity;
+    private Integer quantity;
 
     @Column()
     private Boolean isOnSale;
@@ -67,7 +72,8 @@ public class Product {
     private String approver;
 
     @Column()
-    private String status;
+    @Convert(converter = ProductStatusConverter.class)
+    private ProductStatus status;
 
     @Column()
     private String coverImage;

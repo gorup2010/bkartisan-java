@@ -1,5 +1,6 @@
 package com.bkartisan.be.Dto;
 
+import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Entity.Category;
 import com.bkartisan.be.Entity.Comment;
 import com.bkartisan.be.Entity.Product;
@@ -72,7 +73,7 @@ public class ProductDetailDTO {
     private Integer price;
     private Integer discount;
     private Boolean isOnSale;
-    private String status;
+    private ProductStatus status;
     private Integer numberOfStar;
     private Integer numberOfRating;
     
