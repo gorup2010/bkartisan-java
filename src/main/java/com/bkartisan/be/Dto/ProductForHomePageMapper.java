@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import com.bkartisan.be.Entity.Product;
 
 @Service
-public class ProductsItemForHomePageMapper implements Function<Product, ProductsItemForHomePage> {
+public class ProductForHomePageMapper implements Function<Product, ProductForHomePageDTO> {
     @Override
-    public ProductsItemForHomePage apply(Product product) {
-        return new ProductsItemForHomePage(product.getProductId(), product.getPrice(), product.getName(),
+    public ProductForHomePageDTO apply(Product product) {
+        return new ProductForHomePageDTO(product.getProductId(), product.getPrice(), product.getName(),
                 product.getSeller().getName(), product.getCoverImage(), product.getNumberOfStar(), product.getNumberOfRating(),
                 product.getDiscount());
     }
