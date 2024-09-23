@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Repository.ProductRepository;
 import com.bkartisan.be.Constant.ErrorMessage;
-import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
+import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
 import com.bkartisan.be.ExceptionHandler.NotFoundException;
 
@@ -34,13 +34,11 @@ public class ProductService {
     }
 
     public List<Product> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
-        return productRepo.findProductsByFilters(filter);
+        return productRepo.findByFilterInAdminPage(filter);
     }
 
-    // TODO: implement getProductsForSellerPage
-    public List<Product> getProductsForSellerPage(String searchTerm, String seller, ProductStatus status, Boolean isSoldOut, Integer page,
-            Integer size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return productRepo.findBySellerAndStatus(searchTerm, status, isSoldOut, pageRequest);
+    public List<Product> getProductsForSellerPage(ProductFilterForSellerPageDTO filter, String username) {
+        List<Product> prods = productRepo.findByFilterInSellerPage(filter, username);
+        return prods;
     }
 }
