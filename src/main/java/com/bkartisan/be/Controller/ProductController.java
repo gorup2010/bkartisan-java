@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Dto.ProductDetailDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
-import com.bkartisan.be.Dto.ProductsForAdminPageDTO;
+import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
+import com.bkartisan.be.Dto.ProductForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductForAdminPageMapper;
 import com.bkartisan.be.Dto.ProductForHomePageDTO;
 import com.bkartisan.be.Dto.ProductForHomePageMapper;
@@ -83,17 +84,37 @@ public class ProductController {
         content = {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ProductForSellerPageDTO.class, type = "array"))
         }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized request", content = @Content()),
         @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
     })
 
     @GetMapping("seller")
     @Secured("seller")
-    public ResponseEntity<List<ProductForSellerPageDTO>> getProductsForSellerPage(
-            @RequestParam(defaultValue = "") String searchTerm, @RequestParam(defaultValue = "") ProductStatus status,
-            @RequestParam(defaultValue = "") Boolean isSoldOut, @RequestParam(defaultValue = "1") Integer page, 
-            @RequestParam(defaultValue = "10") Integer offset, Principal principal) {
-        List<Product> prods = productService.getProductsForSellerPage(searchTerm, principal.getName(), status, isSoldOut, page, offset);
+    public ResponseEntity<List<ProductForSellerPageDTO>> getProductsForSellerPage(ProductFilterForSellerPageDTO filter, Principal principal) {
+        List<Product> prods = productService.getProductsForSellerPage(filter, principal.getName());
         List<ProductForSellerPageDTO> prodsDTO = prods.stream().map(productForSellerPageMapper).collect(Collectors.toList());
+        return ResponseEntity.ok(prodsDTO);
+    }
+
+
+
+
+
+    @Operation(summary = "Get products for admin page", tags = { "Product" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return a list of products, if system does not find any products it will return an empty list", 
+        content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = ProductForAdminPageDTO.class, type = "array"))
+        }),
+        @ApiResponse(responseCode = "401", description = "Unauthorized request", content = @Content()),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
+
+    @GetMapping("admin")
+    @Secured("admin")
+    private ResponseEntity<List<ProductForAdminPageDTO>> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
+        List<Product> prods = productService.getProductsForAdminPage(filter);
+        List<ProductForAdminPageDTO> prodsDTO = prods.stream().map(productForAdminPageMapper)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(prodsDTO);
     }
 
@@ -118,15 +139,4 @@ public class ProductController {
         return ResponseEntity.ok(prodDTO);
     }
 
-
-
-
-
-    // @GetMapping("products-list")
-    // private ResponseEntity<List<ProductsForAdminPageDTO>> getProductsForAdminPage(ProductFilterForAdminPageDTO filter) {
-    //     List<Product> prods = productService.getProductsForAdminPage(filter);
-    //     List<ProductsForAdminPageDTO> prodsDTO = prods.stream().map(productForAdminPageMapper)
-    //             .collect(Collectors.toList());
-    //     return ResponseEntity.ok(prodsDTO);
-    // }
 }

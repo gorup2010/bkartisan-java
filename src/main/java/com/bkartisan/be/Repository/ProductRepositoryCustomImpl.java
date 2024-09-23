@@ -6,13 +6,16 @@ import java.time.LocalDate;
 
 import com.bkartisan.be.Constant.OrderConstants;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
+import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
+import com.bkartisan.be.Entity.User;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -20,9 +23,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
 
     @Override
-    public List<Product> findProductsByFilters(ProductFilterForAdminPageDTO filters) {
+    public List<Product> findByFilterInAdminPage(ProductFilterForAdminPageDTO filters) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
@@ -84,6 +88,46 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             typedQuery.setMaxResults(10);
         }
 
+        return typedQuery.getResultList();
+    }
+
+
+    @Override
+    public List<Product> findByFilterInSellerPage(ProductFilterForSellerPageDTO filters, String username) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> query = cb.createQuery(Product.class);
+        Root<Product> product = query.from(Product.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(cb.like(product.get("name"), "%" + filters.searchTerm() + "%"));
+        predicates.add(cb.equal(product.get("seller").get("username"), username));
+
+        if (filters.status() != null) {
+            predicates.add(cb.equal(product.get("status"), filters.status()));
+        }
+
+        if (filters.isSoldOut() != null && filters.isSoldOut() == true) {
+            predicates.add(cb.equal(product.get("quantity"), 0));
+        }
+        else if (filters.isSoldOut() != null && filters.isSoldOut() == false) {
+            predicates.add(cb.greaterThan(product.get("quantity"), 0));
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        TypedQuery<Product> typedQuery = entityManager.createQuery(query);
+
+        // Handle pagination
+        if (filters.offset() != null && filters.page() != null) {
+            int offset = filters.offset();
+            int page = filters.page();
+            typedQuery.setFirstResult(offset * (page - 1));
+            typedQuery.setMaxResults(offset);
+        } else {
+            typedQuery.setFirstResult(0);
+            typedQuery.setMaxResults(10);
+        }
         return typedQuery.getResultList();
     }
 }
