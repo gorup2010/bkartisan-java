@@ -32,6 +32,22 @@ public class CategoryController {
 
 
 
+    @Operation(summary = "Get all categories level 3", tags = { "Category" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return a list of categories or empty list", content = {
+            @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = Category.class))
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
+
+    @GetMapping()
+    public ResponseEntity<List<Category>> getCategoriesLevel3() {
+        List<Category> categories = categoryService.getCategoryByLevel(3);
+        return ResponseEntity.ok(categories);
+    }
+
+
+
+
     @Operation(summary = "Get all children of a category", tags = { "Category" }, responses = {
         @ApiResponse(responseCode = "200", description = "Return a list of categories or empty list if the category has no children", content = {
             @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = Category.class))
