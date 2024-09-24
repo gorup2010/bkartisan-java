@@ -8,14 +8,12 @@ import com.bkartisan.be.Constant.OrderConstants;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
-import com.bkartisan.be.Entity.User;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 

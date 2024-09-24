@@ -25,6 +25,7 @@ public class Category {
     private Integer categoryId;
     @Column()
     private String name;
+    // TODO: Change to OneToOne relationship.
     @Column
     private Integer categoryParent;
     @Column
