@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Repository.ProductRepository;
 import com.bkartisan.be.Constant.ErrorMessage;
+import com.bkartisan.be.Dto.CreateProductDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
@@ -40,5 +41,9 @@ public class ProductService {
     public List<Product> getProductsForSellerPage(ProductFilterForSellerPageDTO filter, String username) {
         List<Product> prods = productRepo.findByFilterInSellerPage(filter, username);
         return prods;
+    }
+
+    public void createProduct(CreateProductDTO productDTO) {
+        
     }
 }

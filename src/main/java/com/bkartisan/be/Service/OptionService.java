@@ -22,8 +22,8 @@ public class OptionService {
         return optionRepository.findByParentOptionOptionId(0);
     }
 
-    public List<String> getNamesOfChildOptions(String parentOptionName) {
-        return optionRepository.findNamesOfChildOptionsByOptionName(parentOptionName);
+    public List<Option> getChildOptions(String parentOptionName) {
+        return optionRepository.findChildOptionsByOptionName(parentOptionName);
     }
 
 }

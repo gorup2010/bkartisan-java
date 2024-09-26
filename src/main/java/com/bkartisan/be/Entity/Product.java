@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Converter.ProductStatusConverter;
+import com.bkartisan.be.Dto.CreateProductDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -101,5 +102,18 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    // public Product(CreateProductDTO dto) {
+    //     this.name = dto.name();
+    //     this.price = dto.price();
+    //     this.description = dto.description();
+    //     this.category = dto.category();
+    //     this.material = dto.material();
+    //     this.quantity = dto.quantity();
+    //     this.coverImage = dto.images()[0].getOriginalFilename();
+    //     this.discount = dto.getDiscount();
+    //     this.introduction = dto.getIntroduction();
+    //     this.type = dto.getType();
+    // }
 
 }

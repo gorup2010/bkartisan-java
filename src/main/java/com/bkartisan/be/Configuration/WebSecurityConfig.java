@@ -55,7 +55,7 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("login", "register", "profile", "logout-success",
+                        .requestMatchers("login", "register", "profile", "logout-success", "home",
                                 "v3/**", // Allow access to Swagger docs
                                 "api/v1/products/**", "api/v1/categories/**")
                         .permitAll()
