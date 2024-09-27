@@ -10,13 +10,13 @@ public interface OptionRepository extends JpaRepository<Option, Integer> {
     List<Option> findByParentOptionOptionId(Integer parentOptionId);
 
     @Query(value = """
-            SELECT optionName
-            FROM options
-            WHERE parentOptionId = (
-                SELECT optionId
-                FROM options
-                WHERE optionName = ?1
-            );
-            """, nativeQuery = true)
-    List<String> findNamesOfChildOptionsByOptionName(String optionName);
+            SELECT o
+            FROM Option o
+            WHERE o.parentOption.optionId = (
+                SELECT po.optionId
+                FROM Option po
+                WHERE po.optionName = ?1
+            )
+            """)
+    List<Option> findChildOptionsByOptionName(String optionName);
 }

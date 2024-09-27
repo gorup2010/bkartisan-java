@@ -14,7 +14,7 @@ import com.bkartisan.be.Service.OptionService;
 
 
 @RestController
-@RequestMapping("/options")
+@RequestMapping("api/v1/options")
 public class OptionController {
     
     private OptionService optionService;
@@ -24,13 +24,13 @@ public class OptionController {
         this.optionService = optionService;
     }
 
-    @GetMapping("/") 
+    @GetMapping("") 
     public ResponseEntity<List<Option>> getRootOptions() {
         return ResponseEntity.ok(optionService.getRootOptions());
     }
 
     @GetMapping("/{parentOptionName}/children")
-    public ResponseEntity<List<String>> getNamesOfChildOptions(@PathVariable String parentOptionName) {
-        return ResponseEntity.ok(optionService.getNamesOfChildOptions(parentOptionName));
+    public ResponseEntity<List<Option>> getChildOptions(@PathVariable String parentOptionName) {
+        return ResponseEntity.ok(optionService.getChildOptions(parentOptionName));
     }
 }

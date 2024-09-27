@@ -1,13 +1,18 @@
 package com.bkartisan.be.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bkartisan.be.Repository.ProductRepository;
+import com.bkartisan.be.Util.FileUploaderUtil;
 import com.bkartisan.be.Constant.ErrorMessage;
+import com.bkartisan.be.Dto.CreateProductDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
@@ -16,9 +21,11 @@ import com.bkartisan.be.ExceptionHandler.NotFoundException;
 @Service
 public class ProductService {
     ProductRepository productRepo;
+    FileUploaderUtil uploaderUtil;
 
     @Autowired
-    public ProductService(ProductRepository productRepo) {
+    public ProductService(ProductRepository productRepo, FileUploaderUtil uploaderUtil) {
+        this.uploaderUtil = uploaderUtil;
         this.productRepo = productRepo;
     }
 
@@ -40,5 +47,14 @@ public class ProductService {
     public List<Product> getProductsForSellerPage(ProductFilterForSellerPageDTO filter, String username) {
         List<Product> prods = productRepo.findByFilterInSellerPage(filter, username);
         return prods;
+    }
+
+    public void createProduct(CreateProductDTO productDTO) {
+        List<MultipartFile> files = new ArrayList<>(productDTO.images());
+        files.addAll(productDTO.videos());
+
+        Map<String, String> results = uploaderUtil.uploadFiles(files);
+
+        
     }
 }

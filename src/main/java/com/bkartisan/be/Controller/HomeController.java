@@ -1,16 +1,17 @@
 package com.bkartisan.be.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 
 @RestController
 public class HomeController {
-    @GetMapping("/") 
-    public String index(HttpServletRequest request) {
-        return "Welcome to " + request.getSession().getId();
+    @PostMapping("/home") 
+    public String index(@RequestBody String name) {
+        return "Welcome to ";
     }
 }
