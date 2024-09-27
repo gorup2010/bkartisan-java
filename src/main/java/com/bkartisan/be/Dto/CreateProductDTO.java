@@ -1,5 +1,7 @@
 package com.bkartisan.be.Dto;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 public record CreateProductDTO(
@@ -11,11 +13,11 @@ public record CreateProductDTO(
     String type,
     String description,
     String introduction,
-    MultipartFile[] images,
+    List<MultipartFile> images,
     String option1,
-    String[] chooseOptions1,
+    List<String> chooseOptions1,
     String option2,
-    String[] chooseOptions2,
-    MultipartFile[] videos
+    List<String> chooseOptions2,
+    List<MultipartFile> videos
 ) {
 }

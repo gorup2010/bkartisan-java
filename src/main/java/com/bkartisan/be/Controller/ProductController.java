@@ -150,6 +150,7 @@ public class ProductController {
 
     // TODO: Create product
     @Operation()
+
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<Void> postMethodName(@ModelAttribute CreateProductDTO productDTO) {
         productService.createProduct(productDTO);
