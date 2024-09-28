@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.lang.instrument.Instrumentation;
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -148,12 +149,16 @@ public class ProductController {
 
 
 
-    // TODO: Create product
-    @Operation()
+    
+    @Operation(summary = "Create product", tags = { "Product" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return product details"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
 
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Void> postMethodName(@ModelAttribute CreateProductDTO productDTO) {
-        productService.createProduct(productDTO);
-        return ResponseEntity.created(null).build();
+    @Secured("seller")
+    public ResponseEntity<Void> createProduct(@ModelAttribute CreateProductDTO productDTO, Principal principal) {
+        Product product = productService.createProduct(productDTO, principal.getName());
+        return ResponseEntity.created(URI.create("/products/" + product.getProductId())).build();
     }
 }

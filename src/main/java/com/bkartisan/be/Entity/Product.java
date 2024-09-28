@@ -1,6 +1,7 @@
 package com.bkartisan.be.Entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -8,6 +9,7 @@ import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Converter.ProductStatusConverter;
 import com.bkartisan.be.Dto.CreateProductDTO;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -20,18 +22,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "product")
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder()
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 public class Product {
     @Id
     @Column()
@@ -74,7 +76,8 @@ public class Product {
 
     @Column()
     @Convert(converter = ProductStatusConverter.class)
-    private ProductStatus status;
+    @Builder.Default
+    private ProductStatus status = ProductStatus.ACTIVE;
 
     @Column()
     private String coverImage;
@@ -97,23 +100,9 @@ public class Product {
     @Column()
     private String type;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ProductLink> assets;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<Comment> comments;
-
-    // public Product(CreateProductDTO dto) {
-    //     this.name = dto.name();
-    //     this.price = dto.price();
-    //     this.description = dto.description();
-    //     this.category = dto.category();
-    //     this.material = dto.material();
-    //     this.quantity = dto.quantity();
-    //     this.coverImage = dto.images()[0].getOriginalFilename();
-    //     this.discount = dto.getDiscount();
-    //     this.introduction = dto.getIntroduction();
-    //     this.type = dto.getType();
-    // }
-
 }

@@ -37,7 +37,7 @@ public class UserService {
         this.setOperations = redisOperations.opsForSet();
     }
 
-    // TODO: invalidate the existing session 
+    // TODO: invalidate the existing session
     @Transactional
     public void registerSeller(SellerRegistrationRequestDTO sellerRegistrationRequestDTO, String username) {
         String key = OTP_EMAIL_PREFIX + sellerRegistrationRequestDTO.getEmail();
@@ -49,8 +49,7 @@ public class UserService {
                     sellerRegistrationRequestDTO.getAddress(),
                     sellerRegistrationRequestDTO.getNumPhone(),
                     sellerRegistrationRequestDTO.getNation(),
-                    username
-                );
+                    username);
 
             redisOperations.delete(key);
         } else {
@@ -78,5 +77,11 @@ public class UserService {
 
     public List<User> getUsers() {
         return userRepo.findAll();
+    }
+
+    // Use getReferenceById to fetch from cache location instead fetch from database.
+    // More in here: https://vladmihalcea.com/spring-data-jpa-findbyid/
+    public User getReferenceByUsername(String username) {
+        return userRepo.getReferenceById(username);
     }
 }
