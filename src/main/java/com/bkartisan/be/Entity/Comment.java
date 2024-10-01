@@ -19,14 +19,16 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Setter;
 
 @Entity
 @Table(name = "comment")
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment {
     @Id
     @Column()
@@ -45,6 +47,9 @@ public class Comment {
     private Integer numberOfStars;
     @Column
     private boolean isDeleted;
+    // TODO: Consider use ManyToOne to link to user
+    @Column
+    private String writer;
 
     @ManyToOne
     @JoinColumn(name = "productId")
@@ -59,6 +64,4 @@ public class Comment {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Comment> childComments;
-
-
 }

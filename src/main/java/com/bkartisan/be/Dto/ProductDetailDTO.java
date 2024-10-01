@@ -79,8 +79,8 @@ public class ProductDetailDTO {
     
 
     private void setComments(List<Comment> comments) {
-        // Filter out the comments that have no replies. Then select those comment and them replies to send to front-end.
-        this.comments = comments.stream().filter(comment -> !comment.getChildComments().isEmpty()).map(CommentDTO::new).toList();
+        // Filter out the comments that have no parent. Then select those comment and their replies to send to front-end.
+        this.comments = comments.stream().filter(comment -> comment.getParentComment() == null).map(CommentDTO::new).toList();
     }
 
     private void setAssets(List<ProductLink> assets) {

@@ -79,7 +79,7 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    // Use getReferenceById to fetch from cache location instead fetch from database.
+    // Use getReferenceById create a proxy object instead of fetching from database.
     // More in here: https://vladmihalcea.com/spring-data-jpa-findbyid/
     public User getReferenceByUsername(String username) {
         return userRepo.getReferenceById(username);
