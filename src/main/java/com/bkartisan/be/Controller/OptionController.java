@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bkartisan.be.Entity.Option;
 import com.bkartisan.be.Service.OptionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 
 @RestController
 @RequestMapping("api/v1/options")
@@ -24,10 +29,30 @@ public class OptionController {
         this.optionService = optionService;
     }
 
-    @GetMapping("") 
+
+
+    @Operation(summary = "Get root options which has parentId = 0", tags = { "Option" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return a list of options", content = {
+            @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = Option.class))
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+
+    @GetMapping() 
     public ResponseEntity<List<Option>> getRootOptions() {
         return ResponseEntity.ok(optionService.getRootOptions());
     }
+
+
+
+
+
+    @Operation(summary = "Get child options of a option", tags = { "Option" }, responses = {
+        @ApiResponse(responseCode = "200", description = "Return a list of options", content = {
+            @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = Option.class))
+        }),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
 
     @GetMapping("/{parentOptionName}/children")
     public ResponseEntity<List<Option>> getChildOptions(@PathVariable String parentOptionName) {

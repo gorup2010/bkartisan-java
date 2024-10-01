@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bkartisan.be.Repository.ProductRepository;
 import com.bkartisan.be.Util.FileUploaderUtil;
+
+import jakarta.persistence.EntityManager;
+
 import com.bkartisan.be.Constant.ErrorMessage;
 import com.bkartisan.be.Dto.CreateProductDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
@@ -23,15 +26,15 @@ import com.bkartisan.be.ExceptionHandler.NotFoundException;
 @Service
 public class ProductService {
     
-    UserService userService;
+    EntityManager entityManager;
     ProductRepository productRepo;
     FileUploaderUtil uploaderUtil;
 
     @Autowired
-    public ProductService(ProductRepository productRepo, UserService userService, FileUploaderUtil uploaderUtil) {
+    public ProductService(ProductRepository productRepo, EntityManager entityManager, FileUploaderUtil uploaderUtil) {
         this.uploaderUtil = uploaderUtil;
         this.productRepo = productRepo;
-        this.userService = userService;
+        this.entityManager = entityManager;
     }
 
     public Product getProduct(Integer id) {
@@ -61,7 +64,9 @@ public class ProductService {
 
         Map<String, String> results = uploaderUtil.uploadFiles(files);
 
-        User seller = userService.getReferenceByUsername(username);
+        // Use getReference to fetch from cache location instead fetch from database.
+        // More in here: https://vladmihalcea.com/spring-data-jpa-findbyid/
+        User seller = entityManager.getReference(User.class, username);
 
         Product product = Product.builder().name(productDTO.name())
                 .price(productDTO.price())
