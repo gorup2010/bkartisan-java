@@ -43,7 +43,6 @@ public class AuthService {
     }
 
     public void registerUser(RegisterRequestDTO registerRequest) {
-        System.out.println(registerRequest);
         if (userRepo.existsById(registerRequest.username())) {
             throw new UserNameExistsException();
         }
