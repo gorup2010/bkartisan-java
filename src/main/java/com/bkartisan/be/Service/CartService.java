@@ -32,7 +32,8 @@ public class CartService {
         this.hashOperations = redisOperations.opsForHash();
     }
 
-    // TODO: Handle NumberFormatException when parseInt() fails
+    // TODO: Handle NumberFormatException when parseInt() fails.
+    // TODO: Add discount to cart.
     public CartInformationDTO getCart(String username) {
         String key = ID_PREFIX + username;
         CartInformationDTO cartInfo = new CartInformationDTO();
