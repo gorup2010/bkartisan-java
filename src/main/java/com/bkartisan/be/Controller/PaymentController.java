@@ -5,6 +5,7 @@ import java.security.Principal;
 
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Dto.OrderAtEachShopDTO;
+import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Service.PaymentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,13 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
 
+// TODO: Backend must be deployed in order to intergrate VNPay.
+// Currently, it is not deployed so we would return "payment-url" and store the order in database. 
+// After that, the frontend would navigate to success payment page.
 @RestController
 @RequestMapping("api/v1/payment")
 public class PaymentController {
 
     private PaymentService paymentService;
+    private OrderService orderService;
 
     @Autowired
     public PaymentController(PaymentService paymentService) {
@@ -62,23 +66,10 @@ public class PaymentController {
     @PostMapping()
     public String createPaymentUrl(@RequestBody CreatePaymentRequestDTO createPaymentRequestDTO,
             HttpServletRequest request, Principal principal) {
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = paymentService.createPaymentUrl(principal.getName(), baseUrl);
+        // String vnpayUrl = paymentService.createPaymentUrl(principal.getName(), request);
+        String vnpayUrl = "payment-url";
+        orderService.saveOrder(createPaymentRequestDTO);
         return vnpayUrl;
-    }
-
-
-
-
-    @Operation(summary = "Get vnpay return url", tags = { "Payment" }, responses = {
-            @ApiResponse(responseCode = "200", content = {@Content(mediaType = "text/plain")}),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
-    })
-
-    @GetMapping("vnpay_return")
-    public String orderReturn(@RequestParam String param) {
-        return new String();
     }
 
 }
