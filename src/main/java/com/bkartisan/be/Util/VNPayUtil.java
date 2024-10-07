@@ -60,7 +60,7 @@ public class VNPayUtil {
     public static String getPaymentURL(Map<String, String> paramsMap, boolean encodeKey) {
         return paramsMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getValue().isEmpty())
-                .sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByKey())         // I don't know but we need to sort in order to get the correct URL
                 .map(entry ->
                         (encodeKey ? URLEncoder.encode(entry.getKey(),
                                 StandardCharsets.US_ASCII)

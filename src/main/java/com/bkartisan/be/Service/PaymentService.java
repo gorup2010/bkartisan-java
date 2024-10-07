@@ -23,7 +23,7 @@ public class PaymentService {
     private VNPayConfig vnPayConfig;
 
     @Autowired
-    public PaymentService(CartService cartService,VNPayConfig vnPayConfig) {
+    public PaymentService(CartService cartService, VNPayConfig vnPayConfig) {
         this.vnPayConfig = vnPayConfig;
         this.cartService = cartService;
     }
@@ -61,11 +61,10 @@ public class PaymentService {
      * https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html#danh-s%C3%A1ch-tham-s%E1%BB%91
      */
     public String createPaymentUrl(String username, HttpServletRequest request) {
-        long amount = cartService.getTotalPrice(username) * 100;
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
-        vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
-        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
+        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig(username,
+                cartService.getTotalPrice(username),
+                VNPayUtil.getIpAddress(request));
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
