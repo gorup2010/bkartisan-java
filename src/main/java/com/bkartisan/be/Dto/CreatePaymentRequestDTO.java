@@ -1,9 +1,13 @@
 package com.bkartisan.be.Dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record CreatePaymentRequestDTO(
-    String name,
+    @JsonProperty("name")
+    String buyerName,
     String numPhone,
     String nation,
-    String address
+    String address,
+    String paymentMethod
 ) {
 }

@@ -1,12 +1,15 @@
 package com.bkartisan.be.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.security.Principal;
 
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Dto.OrderAtEachShopDTO;
+import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Service.PaymentService;
+import com.bkartisan.be.Util.PaymentUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,15 +19,16 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.RequestParam;
 
-// TODO: Backend must be deployed in order to intergrate VNPay.
-// Currently, it is not deployed so we would return "payment-url" and store the order in database. 
-// After that, the frontend would navigate to success payment page.
+
 @RestController
 @RequestMapping("api/v1/payment")
 public class PaymentController {
@@ -33,7 +37,8 @@ public class PaymentController {
     private OrderService orderService;
 
     @Autowired
-    public PaymentController(PaymentService paymentService) {
+    public PaymentController(PaymentService paymentService, OrderService orderService) {
+        this.orderService = orderService;
         this.paymentService = paymentService;
     }
 
@@ -66,10 +71,36 @@ public class PaymentController {
     @PostMapping()
     public String createPaymentUrl(@RequestBody CreatePaymentRequestDTO createPaymentRequestDTO,
             HttpServletRequest request, Principal principal) {
-        // String vnpayUrl = paymentService.createPaymentUrl(principal.getName(), request);
-        String vnpayUrl = "payment-url";
-        orderService.saveOrder(createPaymentRequestDTO);
+        String commonId = orderService.createOrder(createPaymentRequestDTO, principal.getName());
+        String vnpayUrl = paymentService.createPaymentUrl(commonId, principal.getName(), request);
         return vnpayUrl;
     }
 
+
+
+
+    @Operation(summary = "Return url which is called from vnpay", tags = { "Payment" }, responses = {
+        @ApiResponse(responseCode = "303", description = "Redirect client to successful page or failure page"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+
+    @GetMapping("vnpay_return")
+    public RedirectView returnUrlCallbackHandler(Map<String, String> requestParams) {
+        String responseCode = requestParams.get("vnp_ResponseCode");
+        return new RedirectView(paymentService.getRedirectUrl(responseCode));
+    }
+    
+
+
+
+    // TODO: Log payment result.
+    @Operation(summary = "IPN URL which receive payment result from VNPay", tags = { "Payment" })
+
+    @GetMapping("vnpay_ipn")
+    public ResponseEntity<PaymentResultDTO> ipnUrlCallbackHandler(@RequestParam("vnp_ResponseCode") String responseCode, 
+            @RequestParam("vnp_SecureHash") String secureHash, HttpServletRequest request) {
+        PaymentResultDTO res = new PaymentResultDTO(responseCode, "Success");
+        return ResponseEntity.ok(res);
+    }
 }

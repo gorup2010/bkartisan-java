@@ -3,11 +3,11 @@ package com.bkartisan.be.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bkartisan.be.Configuration.VNPayConfig;
+import com.bkartisan.be.Configuration.PaymentConfig;
 import com.bkartisan.be.Dto.CartInformationDTO;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.OrderAtEachShopDTO;
-import com.bkartisan.be.Util.VNPayUtil;
+import com.bkartisan.be.Util.PaymentUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -20,11 +20,11 @@ import java.util.HashMap;
 public class PaymentService {
 
     private CartService cartService;
-    private VNPayConfig vnPayConfig;
+    private PaymentConfig paymentConfig;
 
     @Autowired
-    public PaymentService(CartService cartService,VNPayConfig vnPayConfig) {
-        this.vnPayConfig = vnPayConfig;
+    public PaymentService(CartService cartService, PaymentConfig paymentConfig) {
+        this.paymentConfig = paymentConfig;
         this.cartService = cartService;
     }
 
@@ -60,18 +60,28 @@ public class PaymentService {
      * - List of parameters specified in
      * https://sandbox.vnpayment.vn/apis/docs/thanh-toan-pay/pay.html#danh-s%C3%A1ch-tham-s%E1%BB%91
      */
-    public String createPaymentUrl(String username, HttpServletRequest request) {
-        long amount = cartService.getTotalPrice(username) * 100;
-        Map<String, String> vnpParamsMap = vnPayConfig.getVNPayConfig();
-        vnpParamsMap.put("vnp_Amount", String.valueOf(amount));
-        vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
-        String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
-        String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
-        String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
+    public String createPaymentUrl(String txnRefCode, String username, HttpServletRequest request) {
+        Map<String, String> vnpParamsMap = paymentConfig.getVNPayConfig(txnRefCode,
+                username,
+                cartService.getTotalPrice(username),
+                PaymentUtil.getIpAddress(request));
+        // build query url
+        String queryUrl = PaymentUtil.getPaymentURL(vnpParamsMap, true);
+        String hashData = PaymentUtil.getPaymentURL(vnpParamsMap, false);
+        String vnpSecureHash = PaymentUtil.hmacSHA512(paymentConfig.getVnp_SecretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
-        String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+        String paymentUrl = paymentConfig.getVnp_PayUrl() + "?" + queryUrl;
         return paymentUrl;
     }
 
+    public String getRedirectUrl(String vnPayResponseCode) {
+        String redirectUrl = null;
+        if (vnPayResponseCode != null && vnPayResponseCode.equals("00")) {
+            redirectUrl = paymentConfig.getSuccessPaymentRedirectUrl();
+        } else {
+            redirectUrl = paymentConfig.getFailPaymentRedirectUrl();
+        }
+
+        return redirectUrl;
+    }
 }

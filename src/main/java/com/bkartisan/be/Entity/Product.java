@@ -1,13 +1,11 @@
 package com.bkartisan.be.Entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
 import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Converter.ProductStatusConverter;
-import com.bkartisan.be.Dto.CreateProductDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
