@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 
-import com.bkartisan.be.Constant.OrderConstants;
+import com.bkartisan.be.Constant.SortOrderConstant;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;
 import com.bkartisan.be.Dto.ProductFilterForSellerPageDTO;
 import com.bkartisan.be.Entity.Product;
@@ -58,13 +58,13 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         // Handle ordering
         if (filters.orders() != null) {
             switch (filters.orders()) {
-                case OrderConstants.NEW_TO_OLD:
+                case SortOrderConstant.NEW_TO_OLD:
                     query.orderBy(cb.desc(product.get("approvedAt")));
                     break;
-                case OrderConstants.OLD_TO_NEW:
+                case SortOrderConstant.OLD_TO_NEW:
                     query.orderBy(cb.asc(product.get("approvedAt")));
                     break;
-                case OrderConstants.LOW_TO_HIGH:
+                case SortOrderConstant.LOW_TO_HIGH:
                     query.orderBy(cb.asc(product.get("price")));
                     break;
                 default:

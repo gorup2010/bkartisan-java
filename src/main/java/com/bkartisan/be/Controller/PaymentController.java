@@ -1,6 +1,7 @@
 package com.bkartisan.be.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.security.Principal;
 
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
@@ -8,7 +9,7 @@ import com.bkartisan.be.Dto.OrderAtEachShopDTO;
 import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Service.PaymentService;
-import com.bkartisan.be.Util.VNPayUtil;
+import com.bkartisan.be.Util.PaymentUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -70,7 +71,8 @@ public class PaymentController {
     @PostMapping()
     public String createPaymentUrl(@RequestBody CreatePaymentRequestDTO createPaymentRequestDTO,
             HttpServletRequest request, Principal principal) {
-        String vnpayUrl = paymentService.createPaymentUrl(principal.getName(), request);
+        String commonId = orderService.createOrder(createPaymentRequestDTO, principal.getName());
+        String vnpayUrl = paymentService.createPaymentUrl(commonId, principal.getName(), request);
         return vnpayUrl;
     }
 
@@ -78,14 +80,15 @@ public class PaymentController {
 
 
     @Operation(summary = "Return url which is called from vnpay", tags = { "Payment" }, responses = {
-        @ApiResponse(responseCode = "200", content = {@Content(mediaType = "text/plain")}),
+        @ApiResponse(responseCode = "303", description = "Redirect client to successful page or failure page"),
         @ApiResponse(responseCode = "401", description = "Unauthorized"),
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
 
     @GetMapping("vnpay_return")
-    public RedirectView returnUrlCallbackHandler(MultiValueMap<String, String> requestParams, Principal principal) {
-        return new RedirectView("http://localhost:5173/checkout/success");
+    public RedirectView returnUrlCallbackHandler(Map<String, String> requestParams) {
+        String responseCode = requestParams.get("vnp_ResponseCode");
+        return new RedirectView(paymentService.getRedirectUrl(responseCode));
     }
     
 

@@ -5,25 +5,35 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.bkartisan.be.Constant.OrderStatus;
+
 import io.swagger.v3.oas.annotations.media.Schema;
+
+/**
+ * When customer make an order when enter "Payment" in Cart page, the order will be split into smaller orders.
+ * The original order is split by seller to create these smaller orders.
+ * They all have the same commonId to refer later. 
+ */
 
 @Entity
 @Getter
-@Setter
+@Builder
+@Table(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
     @Id
     @Column(length = 10)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private String orderId;
 
     @Column
     private String seller;
@@ -32,7 +42,8 @@ public class Order {
     private LocalDateTime createdAt;
 
     @Column
-    private String status;
+    @Builder.Default
+    private OrderStatus status = OrderStatus.WAITING;
 
     @Column
     private String paymentMethod;

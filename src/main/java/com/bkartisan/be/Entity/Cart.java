@@ -38,6 +38,4 @@ public class Cart implements Serializable {
     @Column(length = 12)
     @Schema(description = "Note that this column refer to the common_id column in order table")
     private String orderId;
-    @Column(length = 10)
-    private String parentId;
 }
