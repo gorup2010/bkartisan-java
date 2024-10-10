@@ -2,9 +2,13 @@ package com.bkartisan.be.Service;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -122,5 +126,21 @@ public class CartService {
     public void updateProductOnCart(String username, Integer productID, Integer quantity, String note) {
         String key = ID_PREFIX + username;
         hashOperations.put(key, productID, new CartItem(note, quantity));
+    }
+
+    public Map<String, List<CartProductDTO>> mappingProductsToSeller(String username) {
+        CartInformationDTO cartInfo = getCart(username);
+        List<CartProductDTO> productsInCart = cartInfo.getItems();
+
+        // Map products into respective seller
+        Map<String, List<CartProductDTO>> sellerProductsMap = new HashMap<>();
+        for (CartProductDTO product : productsInCart) {
+            if (!sellerProductsMap.containsKey(product.getSellerUsername())) {
+                sellerProductsMap.put(product.getSellerUsername(), new ArrayList<CartProductDTO>());
+            }
+            sellerProductsMap.get(product.getSellerUsername()).add(product);
+        }
+
+        return sellerProductsMap;
     }
 }

@@ -21,8 +21,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Cart stored in database. Act like a product_order table in database")
-public class Cart implements Serializable {
+@Schema(description = "Cart stored in database. Act like a order_product table in database")
+public class OrderProduct implements Serializable {
     @Id
     @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +31,13 @@ public class Cart implements Serializable {
     private Integer productId;
     @Column
     private Integer quantity;
+    @Column
+    private String note;
     @Column(nullable = true, unique = true)
     private String buyer;
     @Column
     private Integer discountId;
-    @Column(length = 12)
+    @Column(length = 12, name = "orderId")
     @Schema(description = "Note that this column refer to the common_id column in order table")
-    private String orderId;
+    private String commonId;
 }

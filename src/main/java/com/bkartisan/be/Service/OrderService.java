@@ -2,55 +2,87 @@ package com.bkartisan.be.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Dto.CartInformationDTO;
+import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Entity.Order;
 import com.bkartisan.be.Repository.OrderRepository;
 import com.bkartisan.be.Util.PaymentUtil;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 @Service
 public class OrderService {
 
     private OrderRepository orderRepository;
+    private OrderProductService orderProductService;
     private CartService cartService;
+    private PaymentUtil paymentUtil;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, CartService cartService, PaymentUtil paymentUtil, 
+            OrderProductService orderProductService) {
+        this.orderProductService = orderProductService;
+        this.cartService = cartService;
         this.orderRepository = orderRepository;
+        this.paymentUtil = paymentUtil;
+    }
+
+    public void createOrder(CreatePaymentRequestDTO createPaymentRequestDTO, String buyer, String seller,
+            String commonId, Integer totalPrice) {
+        String orderId = paymentUtil.getRandomNumber(10);
+
+        Order order = Order.builder().orderId(orderId)
+                .seller(seller)
+                .paymentMethod(createPaymentRequestDTO.paymentMethod())
+                .hasGift(false) // We haven't implement gift yet so set it to false
+                .totalPrice(totalPrice)
+                .status(OrderStatus.WAITING)
+                .buyer(buyer)
+                .buyerName(createPaymentRequestDTO.buyerName())
+                .discountPrice(0) // We haven't implement discount yet so set it to 0
+                .commonId(commonId)
+                .nation(createPaymentRequestDTO.nation())
+                .numPhone(createPaymentRequestDTO.numPhone())
+                .address(createPaymentRequestDTO.address())
+                .build();
+
+        orderRepository.save(order);
     }
 
     /**
      * Return commonId to used to set vnp_TxnRef in payment url.
+     * 
      * @param createPaymentRequestDTO
      * @return commonId
      */
-    public String createOrder(CreatePaymentRequestDTO createPaymentRequestDTO, String username) {
-        String orderId = PaymentUtil.getRandomNumber(10);
-        String commonId = PaymentUtil.getRandomNumber(12);
+    @Transactional
+    public String convertCartItemsToOrders(CreatePaymentRequestDTO createPaymentRequestDTO, String username) {
+        String commonId = paymentUtil.getRandomNumber(12);
 
-        // TODO: get cart
-        CartInformationDTO cartInfo = cartService.getCart(username);
-        cartInfo.getItems().forEach(item -> {
-            System.out.println(item);
+        // Get Map of seller and products in buyer cart
+        Map<String, List<CartProductDTO>> sellerProductsMap = cartService.mappingProductsToSeller(username);
+
+        // Convert the map into database
+        sellerProductsMap.forEach((sellerUsername, products) -> {
+            // Save each product in cart into OrderProduct
+            products.forEach((product) -> {
+                orderProductService.saveOrderProduct(commonId, product.getProductId(), product.getQuantity(), username,
+                        product.getNote());
+            });
+
+            // Get total price
+            Integer totalPrice = products.stream().mapToInt((product) -> product.getPrice() * product.getQuantity())
+                    .sum();
+
+            createOrder(createPaymentRequestDTO, username, sellerUsername, commonId, totalPrice);
         });
-
-
-        // Order order = Order.builder().orderId(orderId)
-        //         .seller(commonId)
-        //         .paymentMethod(createPaymentRequestDTO.paymentMethod())
-        //         .hasGift(false)     // We haven't implement gift yet so set it to false
-        //         .totalPrice()
-        //         .buyer()
-        //         .buyerName(createPaymentRequestDTO.buyerName())
-        //         .discountPrice(0)           // We haven't implement discount yet so set it to 0
-        //         .bankCode()
-        //         .commonId(commonId)
-        //         .nation(createPaymentRequestDTO.nation())
-        //         .phoneNum()
-        //         .isReturn()
-        //         .isFinished()
-        //         .build();
 
         return commonId;
     }

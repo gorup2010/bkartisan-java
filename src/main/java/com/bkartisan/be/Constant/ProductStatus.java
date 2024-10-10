@@ -10,7 +10,7 @@ public enum ProductStatus {
     REVIEWING("Đang duyệt"),
     DELETED("Đã xóa");
 
-    private String valueInDB;
+    private final String valueInDB;
 
     ProductStatus(String valueInDB) {
         this.valueInDB = valueInDB;

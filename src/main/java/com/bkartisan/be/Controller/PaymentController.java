@@ -9,7 +9,6 @@ import com.bkartisan.be.Dto.OrderAtEachShopDTO;
 import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Service.PaymentService;
-import com.bkartisan.be.Util.PaymentUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,9 +69,9 @@ public class PaymentController {
     @PostMapping()
     public String createPaymentUrl(@RequestBody CreatePaymentRequestDTO createPaymentRequestDTO,
             HttpServletRequest request, Principal principal) {
-        String commonId = orderService.createOrder(createPaymentRequestDTO, principal.getName());
-        String vnpayUrl = paymentService.createPaymentUrl(commonId, principal.getName(), request);
-        return vnpayUrl;
+        String commonId = orderService.convertCartItemsToOrders(createPaymentRequestDTO, principal.getName());
+        String vnpayUrl = paymentService.createPaymentUrl(createPaymentRequestDTO, commonId, principal.getName(), request);
+        return vnpayUrl;   
     }
 
 
@@ -86,7 +84,7 @@ public class PaymentController {
     })
 
     @GetMapping("vnpay_return")
-    public RedirectView returnUrlCallbackHandler(Map<String, String> requestParams) {
+    public RedirectView returnUrlCallbackHandler(@RequestParam Map<String, String> requestParams) {
         String responseCode = requestParams.get("vnp_ResponseCode");
         return new RedirectView(paymentService.getRedirectUrl(responseCode));
     }
@@ -98,9 +96,8 @@ public class PaymentController {
     @Operation(summary = "IPN URL which receive payment result from VNPay", tags = { "Payment" })
 
     @GetMapping("vnpay_ipn")
-    public ResponseEntity<PaymentResultDTO> ipnUrlCallbackHandler(@RequestParam("vnp_ResponseCode") String responseCode, 
-            @RequestParam("vnp_SecureHash") String secureHash, HttpServletRequest request) {
-        PaymentResultDTO res = new PaymentResultDTO(responseCode, "Success");
-        return ResponseEntity.ok(res);
+    public ResponseEntity<PaymentResultDTO> ipnUrlCallbackHandler(HttpServletRequest request) {
+        PaymentResultDTO response = paymentService.handlePaymentResultFromVnPay(request);
+        return ResponseEntity.ok(response);
     }
 }
