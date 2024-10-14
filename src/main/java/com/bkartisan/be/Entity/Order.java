@@ -1,9 +1,8 @@
 package com.bkartisan.be.Entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -15,6 +14,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 import com.bkartisan.be.Constant.OrderStatus;
+import com.bkartisan.be.Converter.OrderStatusConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @Table(name = "orders")
 @NoArgsConstructor
@@ -39,11 +40,11 @@ public class Order {
     private String seller;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createAt;
 
     @Column
-    @Builder.Default
-    private OrderStatus status = OrderStatus.WAITING;
+    @Convert(converter = OrderStatusConverter.class)
+    private OrderStatus status;
 
     @Column
     private String paymentMethod;
@@ -83,11 +84,8 @@ public class Order {
     private String address;
 
     @Column(length = 20)
-    private String phoneNum;
+    private String numPhone;
 
     @Column
     private Boolean isReturn;
-
-    @Column
-    private Boolean isFinished;
 }
