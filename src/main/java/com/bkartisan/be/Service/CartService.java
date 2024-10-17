@@ -143,4 +143,9 @@ public class CartService {
 
         return sellerProductsMap;
     }
+
+    Boolean clearCart(String username) {
+        String key = ID_PREFIX + username;
+        return redisOperations.delete(key);
+    }
 }

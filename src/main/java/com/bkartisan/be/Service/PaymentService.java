@@ -1,18 +1,15 @@
 package com.bkartisan.be.Service;
 
-import org.apache.logging.log4j.status.StatusLogger.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Configuration.PaymentConfig;
 import com.bkartisan.be.Constant.OrderStatus;
-import com.bkartisan.be.Dto.CartInformationDTO;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Dto.OrderAtEachShopDTO;
 import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Entity.Order;
-import com.bkartisan.be.Entity.VnPayPaymentInfor;
 import com.bkartisan.be.Repository.OrderRepository;
 import com.bkartisan.be.Util.PaymentUtil;
 
@@ -156,8 +153,10 @@ public class PaymentService {
                 updatedStatus = OrderStatus.PROCESSING;
             }
 
-            // TODO: Fix update status to "Chờ kết quả VNPay" instead of "Đang xử lý".
             orderRepository.updateStatus(request.getParameter("vnp_TxnRef"), updatedStatus);
+
+            String username = request.getParameter("vnp_OrderInfo");
+            cartService.clearCart(username);
 
             return new PaymentResultDTO("00", "Confirm Success");
         } catch (Exception e) {
