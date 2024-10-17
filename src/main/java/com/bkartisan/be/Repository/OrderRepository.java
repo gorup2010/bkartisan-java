@@ -14,7 +14,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Modifying(clearAutomatically = true)
     @Query(value = """
-        UPDATE orders o SET o.status = :status WHERE o.commonId = :commonId
-    """, nativeQuery = true)
+        UPDATE Order o SET o.status = :status WHERE o.commonId = :commonId
+    """)
     public Integer updateStatus(String commonId, OrderStatus status);
 }
