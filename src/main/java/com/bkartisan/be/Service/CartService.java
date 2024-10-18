@@ -128,7 +128,7 @@ public class CartService {
         hashOperations.put(key, productID, new CartItem(note, quantity));
     }
 
-    public Map<String, List<CartProductDTO>> mappingProductsToSeller(String username) {
+    public Map<String, List<CartProductDTO>> getCartProductsToSellerMap(String username) {
         CartInformationDTO cartInfo = getCart(username);
         List<CartProductDTO> productsInCart = cartInfo.getItems();
 

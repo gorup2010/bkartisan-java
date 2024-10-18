@@ -1,15 +1,16 @@
 package com.bkartisan.be.Converter;
 
 import org.springframework.stereotype.Component;
+import org.springframework.core.convert.converter.Converter;
 
 import com.bkartisan.be.Constant.OrderStatus;
+import com.bkartisan.be.Constant.ProductStatus;
 
 import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
 
 @Component
-@Converter
-public class OrderStatusConverter implements AttributeConverter<OrderStatus, String> {
+@jakarta.persistence.Converter
+public class OrderStatusConverter implements AttributeConverter<OrderStatus, String>, Converter<String, OrderStatus> {
     @Override
     public String convertToDatabaseColumn(OrderStatus status) {
         if (status == null) {
@@ -21,5 +22,10 @@ public class OrderStatusConverter implements AttributeConverter<OrderStatus, Str
     @Override
     public OrderStatus convertToEntityAttribute(String dbData) {
         return OrderStatus.getEnumConstantFromString(dbData);
+    }
+
+    @Override
+    public OrderStatus convert(String value) {
+        return OrderStatus.getEnumConstantFromString(value);
     }
 }

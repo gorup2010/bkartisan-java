@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// TODO: Refactor the table into product_order table instead of carts table. Change order_id to common_id.
 @Entity
 @Table(name = "carts")
 @Getter
@@ -37,7 +36,6 @@ public class OrderProduct implements Serializable {
     private String buyer;
     @Column
     private Integer discountId;
-    @Column(length = 12, name = "orderId")
-    @Schema(description = "Note that this column refer to the common_id column in order table")
-    private String commonId;
+    @Column(length = 10)
+    private String orderId;
 }

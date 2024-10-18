@@ -8,7 +8,10 @@ import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Dto.CartInformationDTO;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
+import com.bkartisan.be.Dto.OrderBuyerDTO;
+import com.bkartisan.be.Dto.OrderBuyerQueryResult;
 import com.bkartisan.be.Entity.Order;
+import com.bkartisan.be.Entity.OrderProduct;
 import com.bkartisan.be.Repository.OrderRepository;
 import com.bkartisan.be.Util.PaymentUtil;
 
@@ -34,7 +37,7 @@ public class OrderService {
         this.paymentUtil = paymentUtil;
     }
 
-    public void createOrder(CreatePaymentRequestDTO createPaymentRequestDTO, String buyer, String seller,
+    public Order createAndSaveOrder(CreatePaymentRequestDTO createPaymentRequestDTO, String buyer, String seller,
             String commonId, Integer totalPrice) {
         String orderId = paymentUtil.getRandomNumber(10);
 
@@ -54,6 +57,8 @@ public class OrderService {
                 .build();
 
         orderRepository.save(order);
+
+        return order;
     }
 
     /**
@@ -63,27 +68,31 @@ public class OrderService {
      * @return commonId
      */
     @Transactional
-    public String convertCartItemsToOrders(CreatePaymentRequestDTO createPaymentRequestDTO, String username) {
+    public String convertCartItemsToOrders(CreatePaymentRequestDTO createPaymentRequestDTO, String buyerUsername) {
         String commonId = paymentUtil.getRandomNumber(12);
 
         // Get Map of seller and products in buyer cart
-        Map<String, List<CartProductDTO>> sellerProductsMap = cartService.mappingProductsToSeller(username);
+        Map<String, List<CartProductDTO>> sellerProductsMap = cartService.getCartProductsToSellerMap(buyerUsername);
 
         // Convert the map into database
         sellerProductsMap.forEach((sellerUsername, products) -> {
-            // Save each product in cart into OrderProduct
-            products.forEach((product) -> {
-                orderProductService.saveOrderProduct(commonId, product.getProductId(), product.getQuantity(), username,
-                        product.getNote());
-            });
-
             // Get total price
             Integer totalPrice = products.stream().mapToInt((product) -> product.getPrice() * product.getQuantity())
                     .sum();
 
-            createOrder(createPaymentRequestDTO, username, sellerUsername, commonId, totalPrice);
+            Order order = createAndSaveOrder(createPaymentRequestDTO, buyerUsername, sellerUsername, commonId, totalPrice);
+
+            // Save each product in cart into OrderProduct
+            products.forEach((product) -> {
+                orderProductService.saveOrderProduct(order, product.getProductId(), product.getQuantity(), buyerUsername,
+                        product.getNote());
+            });
         });
 
         return commonId;
+    }
+
+    public List<OrderBuyerQueryResult> getBuyerOrders(String username, OrderStatus status) {
+        return orderRepository.findByBuyerAndStatus(username, status);
     }
 }

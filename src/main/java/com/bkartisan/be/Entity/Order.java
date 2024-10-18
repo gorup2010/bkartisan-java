@@ -65,6 +65,10 @@ public class Order {
     private String buyerName;
 
     @Column
+    @Builder.Default
+    private Integer shipPrice = 0;
+
+    @Column
     @Schema(description = "The amount of money discounted")
     private Integer discountPrice;
 
