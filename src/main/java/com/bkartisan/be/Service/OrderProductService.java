@@ -3,6 +3,8 @@ package com.bkartisan.be.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bkartisan.be.Dto.OrderBuyerQueryResult;
+import com.bkartisan.be.Entity.Order;
 import com.bkartisan.be.Entity.OrderProduct;
 import com.bkartisan.be.Repository.OrderProductRepository;
 
@@ -16,14 +18,14 @@ public class OrderProductService {
         this.orderProductRepository = orderProductRepository;
     }
 
-    public void saveOrderProduct(String commonId, Integer productId, Integer quantity, String buyer, String note) {
+    public OrderProduct saveOrderProduct(Order order, Integer productId, Integer quantity, String buyer, String note) {
         OrderProduct orderProduct = new OrderProduct();
-        orderProduct.setCommonId(commonId);
+        orderProduct.setOrderId(order.getOrderId());
         orderProduct.setProductId(productId);
         orderProduct.setQuantity(quantity);
         orderProduct.setBuyer(buyer);
         orderProduct.setNote(note);
-        orderProductRepository.save(orderProduct);
+        return orderProductRepository.save(orderProduct);
     }
 
 }

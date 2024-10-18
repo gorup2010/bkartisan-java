@@ -44,7 +44,7 @@ public class PaymentService {
 
     public List<OrderAtEachShopDTO> checkoutOrder(String username) {
         // Map products into respective seller
-        Map<String, List<CartProductDTO>> sellerProductsMap = cartService.mappingProductsToSeller(username);
+        Map<String, List<CartProductDTO>> sellerProductsMap = cartService.getCartProductsToSellerMap(username);
 
         // Convert the map into a list of OrderAtEachShopDTO
         List<OrderAtEachShopDTO> orders = new ArrayList<>();

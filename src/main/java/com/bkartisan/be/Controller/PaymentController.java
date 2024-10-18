@@ -93,7 +93,10 @@ public class PaymentController {
 
 
     // TODO: Log payment result.
-    @Operation(summary = "IPN URL which receive payment result from VNPay", tags = { "Payment" })
+    @Operation(summary = "IPN URL which receive payment result from VNPay", tags = { "Payment" }, responses = {
+        @ApiResponse(responseCode = "200", content = 
+            {@Content(mediaType = "application/json", schema = @Schema(implementation = PaymentResultDTO.class))}),
+    })
 
     @GetMapping("vnpay_ipn")
     public ResponseEntity<PaymentResultDTO> ipnUrlCallbackHandler(HttpServletRequest request) {
