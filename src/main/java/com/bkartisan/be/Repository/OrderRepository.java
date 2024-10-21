@@ -18,31 +18,22 @@ public interface OrderRepository extends JpaRepository<Order, String> {
 
     @Modifying(clearAutomatically = true)
     @Query(value = """
-                UPDATE Order o SET o.status = :status WHERE o.commonId = :commonId
-            """)
+        UPDATE Order o SET o.status = :status WHERE o.commonId = :commonId
+    """)
     public Integer updateStatus(String commonId, OrderStatus status);
 
-    // @Query(value = """
-    //     SELECT new com.bkartisan.be.Dto.OrderBuyerQueryResult(o.orderId, o.status, o.totalPrice, o.shipPrice, o.discountPrice, o.createAt, o.paymentMethod, 
-    //                     s.username, s.name, s.avatar, 
-    //                     p.coverImage, p.name, op.quantity, op.quantity * p.price, p.discount)
-    //     FROM Order o
-    //     JOIN User s ON s.username = o.seller
-    //     JOIN OrderProduct op ON op.orderId = o.orderId
-    //     JOIN Product p ON p.productId = op.productId
-    //     WHERE o.buyer = :buyer AND o.status = :status
-    // """)
-    // public List<OrderBuyerQueryResult> findByBuyerAndStatus(String buyer, OrderStatus status);
 
     @Query(value = """
-        SELECT new com.bkartisan.be.Dto.OrderBuyerQueryResult(o.orderId, 'o.status', o.totalPrice, o.shipPrice, o.discountPrice, o.createAt, o.paymentMethod, 
+        SELECT new com.bkartisan.be.Dto.OrderBuyerQueryResult(o.orderId, o.status, o.totalPrice, o.shipPrice, o.discountPrice, o.createAt, o.paymentMethod, 
                         s.username, s.name, s.avatar, 
                         p.coverImage, p.name, op.quantity, op.quantity * p.price, p.discount)
         FROM Order o
         JOIN User s ON s.username = o.seller
         JOIN OrderProduct op ON op.orderId = o.orderId
         JOIN Product p ON p.productId = op.productId
-        WHERE o.buyer = :buyer and o.status = :status
+        WHERE o.buyer = :buyer AND 
+            (:status IS NULL OR o.status = :status)
+        ORDER BY o.orderId DESC
     """)
-    public List<OrderBuyerQueryResult> findByBuyerAndStatus(@Param("buyer") String buyer, @Param("status") OrderStatus status);
+    public List<OrderBuyerQueryResult> findByBuyerAndStatusOrderById(@Param("buyer") String buyer, @Param("status") OrderStatus status);
 }

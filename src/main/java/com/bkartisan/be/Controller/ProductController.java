@@ -2,7 +2,6 @@ package com.bkartisan.be.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bkartisan.be.Constant.ProductStatus;
 import com.bkartisan.be.Dto.CreateProductDTO;
 import com.bkartisan.be.Dto.ProductDetailDTO;
 import com.bkartisan.be.Dto.ProductFilterForAdminPageDTO;

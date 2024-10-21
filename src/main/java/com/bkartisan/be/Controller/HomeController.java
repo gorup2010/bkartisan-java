@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Constant.OrderStatus;
-import com.bkartisan.be.Dto.OrderBuyerQueryResult;
+import com.bkartisan.be.Dto.OrderBuyerDTO;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class HomeController {
     }
 
     @PostMapping("/home") 
-    public ResponseEntity<List<OrderBuyerQueryResult>> entry() {
+    public ResponseEntity<List<OrderBuyerDTO>> entry() {
         return ResponseEntity.ok(orderService.getBuyerOrders("SaulGoofman", OrderStatus.PROCESSING));
     }
 }

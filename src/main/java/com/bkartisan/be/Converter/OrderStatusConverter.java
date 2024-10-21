@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.core.convert.converter.Converter;
 
 import com.bkartisan.be.Constant.OrderStatus;
-import com.bkartisan.be.Constant.ProductStatus;
 
 import jakarta.persistence.AttributeConverter;
 
