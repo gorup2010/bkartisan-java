@@ -2,15 +2,18 @@ package com.bkartisan.be.Dto;
 
 import java.util.List;
 
-import com.bkartisan.be.Entity.Order;
-import com.bkartisan.be.Entity.User;
+import com.bkartisan.be.Constant.OrderStatus;
+
+import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
+@AllArgsConstructor
 public class OrderBuyerDTO {
 
     @Getter
@@ -24,7 +27,7 @@ public class OrderBuyerDTO {
     }
 
     private String orderId;
-    private String status;
+    private OrderStatus status;
     private Integer totalPrice;
     private Integer shipPrice;
     private Integer discountPrice;
@@ -35,16 +38,22 @@ public class OrderBuyerDTO {
     private String sellerAvatar;
     private List<Item> items;
 
-    public OrderBuyerDTO(Order order, User user) {
+    public OrderBuyerDTO(OrderBuyerQueryResult order) {
         this.orderId = order.getOrderId();
-        this.status = order.getStatus().toString();
+        this.status = order.getStatus();
         this.totalPrice = order.getTotalPrice();
         this.shipPrice = order.getShipPrice();
         this.discountPrice = order.getDiscountPrice();
         this.createAt = order.getCreateAt().toString();
         this.paymentMethod = order.getPaymentMethod();
-        this.seller = user.getUsername();
-        this.sellerName = user.getName();
-        this.sellerAvatar = user.getAvatar();
+        this.seller = order.getSeller();
+        this.sellerName = order.getSellerName();
+        this.sellerAvatar = order.getSellerAvatar();
+        this.items = new ArrayList<>();
+        this.items.add(new Item(order.getCoverImage(), order.getName(), order.getQuantity(), order.getPrice(), order.getDiscount()));
+    }
+
+    public void addItem(OrderBuyerQueryResult order) {
+        this.items.add(new Item(order.getCoverImage(), order.getName(), order.getQuantity(), order.getPrice(), order.getDiscount()));
     }
 }

@@ -2,17 +2,16 @@ package com.bkartisan.be.Dto;
 
 import java.time.LocalDateTime;
 
+import com.bkartisan.be.Constant.OrderStatus;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class OrderBuyerQueryResult {
     private String orderId;
-    private String status;
+    private OrderStatus status;
     private Integer totalPrice;
     private Integer shipPrice;
     private Integer discountPrice;

@@ -5,20 +5,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bkartisan.be.Constant.OrderStatus;
-import com.bkartisan.be.Dto.CartInformationDTO;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Dto.OrderBuyerDTO;
 import com.bkartisan.be.Dto.OrderBuyerQueryResult;
 import com.bkartisan.be.Entity.Order;
-import com.bkartisan.be.Entity.OrderProduct;
 import com.bkartisan.be.Repository.OrderRepository;
 import com.bkartisan.be.Util.PaymentUtil;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
 
 @Service
 public class OrderService {
@@ -92,7 +89,20 @@ public class OrderService {
         return commonId;
     }
 
-    public List<OrderBuyerQueryResult> getBuyerOrders(String username, OrderStatus status) {
-        return orderRepository.findByBuyerAndStatus(username, status);
+    public List<OrderBuyerDTO> getBuyerOrders(String username, OrderStatus status) {
+        List<OrderBuyerQueryResult> orderQueryRes = orderRepository.findByBuyerAndStatusOrderById(username, status);
+        List<OrderBuyerDTO> orderBuyerDTOs = new ArrayList<>();
+
+        // Convert OrderBuyerQueryResult to OrderBuyerDTO
+        for (OrderBuyerQueryResult order : orderQueryRes) {
+            if (orderBuyerDTOs.size() == 0 || !orderBuyerDTOs.get(orderBuyerDTOs.size() - 1).getOrderId().equals(order.getOrderId())) {
+                orderBuyerDTOs.add(new OrderBuyerDTO(order));
+            }
+            else {
+                orderBuyerDTOs.get(orderBuyerDTOs.size() - 1).addItem(order);
+            }
+        }
+
+        return orderBuyerDTOs;
     }
 }
