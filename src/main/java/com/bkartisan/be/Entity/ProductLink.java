@@ -1,6 +1,6 @@
 package com.bkartisan.be.Entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -38,7 +38,7 @@ public class ProductLink {
     private String type;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @ManyToOne()
     @JoinColumn(name = "productId")

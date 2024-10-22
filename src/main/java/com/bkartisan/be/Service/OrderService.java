@@ -1,13 +1,15 @@
 package com.bkartisan.be.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
-import com.bkartisan.be.Dto.OrderBuyerDTO;
+import com.bkartisan.be.Dto.OrderForBuyerPageDTO;
+import com.bkartisan.be.Dto.OrderForSellerPageDTO;
 import com.bkartisan.be.Dto.OrderBuyerQueryResult;
 import com.bkartisan.be.Entity.Order;
 import com.bkartisan.be.Repository.OrderRepository;
@@ -89,14 +91,14 @@ public class OrderService {
         return commonId;
     }
 
-    public List<OrderBuyerDTO> getBuyerOrders(String username, OrderStatus status) {
+    public List<OrderForBuyerPageDTO> getBuyerOrders(String username, OrderStatus status) {
         List<OrderBuyerQueryResult> orderQueryRes = orderRepository.findByBuyerAndStatusOrderById(username, status);
-        List<OrderBuyerDTO> orderBuyerDTOs = new ArrayList<>();
+        List<OrderForBuyerPageDTO> orderBuyerDTOs = new ArrayList<>();
 
         // Convert OrderBuyerQueryResult to OrderBuyerDTO
         for (OrderBuyerQueryResult order : orderQueryRes) {
             if (orderBuyerDTOs.size() == 0 || !orderBuyerDTOs.get(orderBuyerDTOs.size() - 1).getOrderId().equals(order.getOrderId())) {
-                orderBuyerDTOs.add(new OrderBuyerDTO(order));
+                orderBuyerDTOs.add(new OrderForBuyerPageDTO(order));
             }
             else {
                 orderBuyerDTOs.get(orderBuyerDTOs.size() - 1).addItem(order);
@@ -104,5 +106,10 @@ public class OrderService {
         }
 
         return orderBuyerDTOs;
+    }
+
+    public List<OrderForSellerPageDTO> getSellerOrders(String seller, Pageable pageable) {
+        List<OrderForSellerPageDTO> orderForSellerPageDTOs = orderRepository.findOrderForSellerPage(seller, pageable);
+        return orderForSellerPageDTOs;
     }
 }

@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public record ProductForAdminPageDTO(
         Integer productId,
@@ -8,5 +8,5 @@ public record ProductForAdminPageDTO(
         String name,
         String seller,
         Integer price,
-        LocalDateTime approvedAt) {
+        ZonedDateTime approvedAt) {
 }

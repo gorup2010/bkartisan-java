@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.bkartisan.be.Constant.OrderStatus;
 
@@ -15,7 +15,7 @@ public class OrderBuyerQueryResult {
     private Integer totalPrice;
     private Integer shipPrice;
     private Integer discountPrice;
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
     private String paymentMethod;
     private String seller;
     private String sellerName;
