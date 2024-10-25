@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public record UserInformationDTO(
         String username,
@@ -12,6 +12,6 @@ public record UserInformationDTO(
         String role,
         String nation,
         Character gender,
-        LocalDateTime lockUntil,
-        LocalDateTime createdAt) {
+        ZonedDateTime lockUntil,
+        ZonedDateTime createdAt) {
 }

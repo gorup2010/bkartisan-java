@@ -1,5 +1,6 @@
 package com.bkartisan.be.Repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import com.bkartisan.be.Entity.Order;
 import io.lettuce.core.dynamic.annotation.Param;
 
 import com.bkartisan.be.Dto.OrderBuyerQueryResult;
+import com.bkartisan.be.Dto.OrderForSellerPageDTO;
 
 import java.util.List;
 
@@ -36,4 +38,12 @@ public interface OrderRepository extends JpaRepository<Order, String> {
         ORDER BY o.orderId DESC
     """)
     public List<OrderBuyerQueryResult> findByBuyerAndStatusOrderById(@Param("buyer") String buyer, @Param("status") OrderStatus status);
+
+    @Query("""
+            SELECT new com.bkartisan.be.Dto.OrderForSellerPageDTO(o.orderId, o.seller, o.createAt, o.status, o.paymentMethod, o.hasGift, o.totalPrice, :seller)
+            FROM Order o
+            WHERE o.seller = :seller
+            ORDER BY o.createAt DESC
+    """)
+    public List<OrderForSellerPageDTO> findOrderForSellerPage(@Param("seller") String seller, Pageable pageable);
 }

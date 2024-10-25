@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Converter.OrderStatusConverter;
@@ -40,7 +40,7 @@ public class Order {
     private String seller;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @Column
     @Convert(converter = OrderStatusConverter.class)

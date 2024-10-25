@@ -1,6 +1,6 @@
 package com.bkartisan.be.Dto;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.bkartisan.be.Entity.User;
 
@@ -14,8 +14,8 @@ public record UserProfileDTO(
         String role,
         String nation,
         Character gender,
-        LocalDateTime lockUntil,
-        LocalDateTime createdAt,
+        ZonedDateTime lockUntil,
+        ZonedDateTime createdAt,
         Integer totalPrice,
         Integer cartItems) {
     

@@ -1,7 +1,7 @@
 package com.bkartisan.be.Entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import com.bkartisan.be.Constant.UserRole;
 import com.bkartisan.be.Dto.RegisterRequestDTO;
@@ -40,13 +40,13 @@ public class User implements Serializable {
     @Column
     private String loginType;
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
     @Column
     private String avatar;
     @Column(nullable = false)
     private String role = UserRole.BUYER;
     @Column()
-    private LocalDateTime lockUntil;
+    private ZonedDateTime lockUntil;
     @Column(length = 50)
     private String nation;
     @Column(length = 50)

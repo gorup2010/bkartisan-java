@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bkartisan.be.Constant.OrderStatus;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class OrderBuyerDTO {
+public class OrderForBuyerPageDTO {
 
     @Getter
     @AllArgsConstructor
@@ -31,20 +32,20 @@ public class OrderBuyerDTO {
     private Integer totalPrice;
     private Integer shipPrice;
     private Integer discountPrice;
-    private String createAt;
+    private ZonedDateTime createAt;
     private String paymentMethod;
     private String seller;
     private String sellerName;
     private String sellerAvatar;
     private List<Item> items;
 
-    public OrderBuyerDTO(OrderBuyerQueryResult order) {
+    public OrderForBuyerPageDTO(OrderBuyerQueryResult order) {
         this.orderId = order.getOrderId();
         this.status = order.getStatus();
         this.totalPrice = order.getTotalPrice();
         this.shipPrice = order.getShipPrice();
         this.discountPrice = order.getDiscountPrice();
-        this.createAt = order.getCreateAt().toString();
+        this.createAt = order.getCreateAt();
         this.paymentMethod = order.getPaymentMethod();
         this.seller = order.getSeller();
         this.sellerName = order.getSellerName();

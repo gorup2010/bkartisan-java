@@ -1,6 +1,6 @@
 package com.bkartisan.be.Entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 
@@ -64,10 +64,10 @@ public class Product {
     private User seller;
 
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @Column()
-    private LocalDateTime approvedAt;
+    private ZonedDateTime approvedAt;
 
     @Column(nullable = true)
     private String approver;

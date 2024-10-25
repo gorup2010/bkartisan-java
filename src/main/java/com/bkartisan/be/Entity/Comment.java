@@ -1,6 +1,6 @@
 package com.bkartisan.be.Entity;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,7 +38,7 @@ public class Comment {
     @Column
     private String content;
     @Column(insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
     @Column
     private Integer numberOfUpvotes;
     @Column
