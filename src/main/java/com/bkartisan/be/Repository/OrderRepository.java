@@ -12,6 +12,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 
 import com.bkartisan.be.Dto.OrderBuyerQueryResult;
 import com.bkartisan.be.Dto.OrderForSellerPageDTO;
+import com.bkartisan.be.Dto.OrderSellerQueryResult;
 
 import java.util.List;
 
@@ -46,4 +47,16 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             ORDER BY o.createAt DESC
     """)
     public List<OrderForSellerPageDTO> findOrderForSellerPage(@Param("seller") String seller, Pageable pageable);
+
+    @Query(value = """
+        SELECT new com.bkartisan.be.Dto.OrderSellerQueryResult(o.orderId, o.status, o.totalPrice, o.shipPrice, o.discountPrice, o.createAt, o.paymentMethod, 
+                        s.username, s.name, s.avatar, 
+                        p.coverImage, p.name, op.quantity, op.quantity * p.price, p.discount)
+        FROM Order o
+        JOIN User s ON s.username = o.buyer
+        JOIN OrderProduct op ON op.orderId = o.orderId
+        JOIN Product p ON p.productId = op.productId
+        WHERE o.seller = :seller AND o.orderId = :orderId
+    """)
+    public List<OrderSellerQueryResult> getOrderDetailForSeller(@Param("seller") String seller, @Param("orderId") String orderId);
 }

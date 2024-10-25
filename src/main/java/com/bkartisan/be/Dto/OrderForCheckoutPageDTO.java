@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "Information of order at each shop is shown in checkout page")
-public class OrderAtEachShopDTO {
+public class OrderForCheckoutPageDTO {
 
     @Getter
     @Schema(description = "The products are bought at each shop")
@@ -35,7 +35,7 @@ public class OrderAtEachShopDTO {
 
 
     // TODO: Apply discount
-    public OrderAtEachShopDTO(List<CartProductDTO> products) {
+    public OrderForCheckoutPageDTO(List<CartProductDTO> products) {
         this.seller = products.get(0).getSellerName();
         this.totalPrice = products.stream().mapToInt((product) -> product.getPrice() * product.getQuantity()).sum();
         this.discountPrice = 0;
