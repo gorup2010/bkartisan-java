@@ -7,7 +7,7 @@ import com.bkartisan.be.Configuration.PaymentConfig;
 import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Dto.CartProductDTO;
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
-import com.bkartisan.be.Dto.OrderAtEachShopDTO;
+import com.bkartisan.be.Dto.OrderForCheckoutPageDTO;
 import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Entity.Order;
 import com.bkartisan.be.Repository.OrderRepository;
@@ -42,16 +42,16 @@ public class PaymentService {
         this.paymentUtil = paymentUtil;
     }
 
-    public List<OrderAtEachShopDTO> checkoutOrder(String username) {
+    public List<OrderForCheckoutPageDTO> checkoutOrder(String username) {
         // Map products into respective seller
         Map<String, List<CartProductDTO>> sellerProductsMap = cartService.getCartProductsToSellerMap(username);
 
-        // Convert the map into a list of OrderAtEachShopDTO
-        List<OrderAtEachShopDTO> orders = new ArrayList<>();
+        // Convert the map into a list of OrderForCheckoutPageDTO
+        List<OrderForCheckoutPageDTO> orders = new ArrayList<>();
 
         for (Map.Entry<String, List<CartProductDTO>> entry : sellerProductsMap.entrySet()) {
             List<CartProductDTO> products = entry.getValue();
-            OrderAtEachShopDTO order = new OrderAtEachShopDTO(products);
+            OrderForCheckoutPageDTO order = new OrderForCheckoutPageDTO(products);
             orders.add(order);
         }
 

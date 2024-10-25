@@ -5,7 +5,7 @@ import java.util.Map;
 import java.security.Principal;
 
 import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
-import com.bkartisan.be.Dto.OrderAtEachShopDTO;
+import com.bkartisan.be.Dto.OrderForCheckoutPageDTO;
 import com.bkartisan.be.Dto.PaymentResultDTO;
 import com.bkartisan.be.Service.OrderService;
 import com.bkartisan.be.Service.PaymentService;
@@ -45,15 +45,15 @@ public class PaymentController {
 
     @Operation(summary = "Checkout order before procceed to payment", tags = { "Payment" }, responses = {
             @ApiResponse(responseCode = "200", content = {
-                @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = OrderAtEachShopDTO.class))
+                @Content(mediaType = "application/json", schema = @Schema(type = "array", implementation = OrderForCheckoutPageDTO.class))
             }),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
 
     @GetMapping("checkout")
-    public ResponseEntity<List<OrderAtEachShopDTO>> checkoutOrder(Principal principal) {
-        List<OrderAtEachShopDTO> orders = paymentService.checkoutOrder(principal.getName());
+    public ResponseEntity<List<OrderForCheckoutPageDTO>> checkoutOrder(Principal principal) {
+        List<OrderForCheckoutPageDTO> orders = paymentService.checkoutOrder(principal.getName());
         return ResponseEntity.ok(orders);
     }
 
