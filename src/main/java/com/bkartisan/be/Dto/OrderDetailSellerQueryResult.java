@@ -1,25 +1,32 @@
 package com.bkartisan.be.Dto;
 
+import com.bkartisan.be.Constant.OrderStatus;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class OrderSellerQueryResult {
+@Schema(description = "Query result in database used for construct OrderDetailForSellerPageDTO")
+public class OrderDetailSellerQueryResult {
+    // Order Information
     String orderId;
+    OrderStatus status;
+    Integer totalPrice;
     Integer shipPrice;
     Integer discountPrice;
-    Integer totalPrice;
-    Integer totalQuantity;
     Boolean hasGift;
     Boolean isReturn;
+    // Buyer Information
     String buyerName;
     String buyerUsername;
     String buyerNumPhone;
     String buyerEmail;
     String buyerAddress;
     String buyerAvatar;
-    String productId;
+    // Product Information
+    Integer productId;
     String productName;
     Integer productQuantity;
     Integer productPrice;

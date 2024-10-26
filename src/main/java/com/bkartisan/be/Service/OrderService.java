@@ -1,6 +1,5 @@
 package com.bkartisan.be.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +10,8 @@ import com.bkartisan.be.Dto.CreatePaymentRequestDTO;
 import com.bkartisan.be.Dto.OrderForBuyerPageDTO;
 import com.bkartisan.be.Dto.OrderForSellerPageDTO;
 import com.bkartisan.be.Dto.OrderBuyerQueryResult;
+import com.bkartisan.be.Dto.OrderDetailForSellerPageDTO;
+import com.bkartisan.be.Dto.OrderDetailSellerQueryResult;
 import com.bkartisan.be.Entity.Order;
 import com.bkartisan.be.Repository.OrderRepository;
 import com.bkartisan.be.Util.PaymentUtil;
@@ -27,7 +28,6 @@ public class OrderService {
     private CartService cartService;
     private PaymentUtil paymentUtil;
 
-    @Autowired
     public OrderService(OrderRepository orderRepository, CartService cartService, PaymentUtil paymentUtil, 
             OrderProductService orderProductService) {
         this.orderProductService = orderProductService;
@@ -111,5 +111,21 @@ public class OrderService {
     public List<OrderForSellerPageDTO> getSellerOrders(String seller, Pageable pageable) {
         List<OrderForSellerPageDTO> orderForSellerPageDTOs = orderRepository.findOrderForSellerPage(seller, pageable);
         return orderForSellerPageDTOs;
+    }
+
+    public OrderDetailForSellerPageDTO getOrderDetailForSeller (String seller, String orderId) {
+        List<OrderDetailSellerQueryResult> orderQueryRes = orderRepository.getOrderDetailForSeller(seller, orderId);
+        OrderDetailForSellerPageDTO orderDetailForSellerPageDTO = null;
+
+        for (OrderDetailSellerQueryResult order : orderQueryRes) {
+            if (orderDetailForSellerPageDTO == null) {
+                orderDetailForSellerPageDTO = new OrderDetailForSellerPageDTO(order);
+            }
+            else {
+                orderDetailForSellerPageDTO.addItem(order);
+            }
+        }
+
+        return orderDetailForSellerPageDTO;
     }
 }
