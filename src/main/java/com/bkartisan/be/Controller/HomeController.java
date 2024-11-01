@@ -26,7 +26,6 @@ public class HomeController {
 
     // TODO: Store user id in session instead the whole user entity.
     // TODO: Research about ZonedDateTime
-    // TODO: Review one more time about VNPay payment.
     @PostMapping("/home") 
     public ResponseEntity<List<OrderForBuyerPageDTO>> entry() {
         return ResponseEntity.ok(orderService.getBuyerOrders("SaulGoofman", OrderStatus.PROCESSING));

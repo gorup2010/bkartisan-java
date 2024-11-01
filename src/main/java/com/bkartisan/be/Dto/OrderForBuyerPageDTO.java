@@ -9,12 +9,9 @@ import java.util.ArrayList;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 
 @Getter
-@Setter
-@AllArgsConstructor
 public class OrderForBuyerPageDTO {
 
     @Getter
@@ -37,7 +34,7 @@ public class OrderForBuyerPageDTO {
     private String seller;
     private String sellerName;
     private String sellerAvatar;
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 
     public OrderForBuyerPageDTO(OrderBuyerQueryResult order) {
         this.orderId = order.getOrderId();
@@ -50,7 +47,6 @@ public class OrderForBuyerPageDTO {
         this.seller = order.getSeller();
         this.sellerName = order.getSellerName();
         this.sellerAvatar = order.getSellerAvatar();
-        this.items = new ArrayList<>();
         this.items.add(new Item(order.getCoverImage(), order.getName(), order.getQuantity(), order.getPrice(), order.getDiscount()));
     }
 

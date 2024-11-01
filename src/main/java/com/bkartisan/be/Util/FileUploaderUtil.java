@@ -1,7 +1,6 @@
 package com.bkartisan.be.Util;
 
 import com.cloudinary.Cloudinary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,6 @@ public class FileUploaderUtil {
 
     private Cloudinary cloudinary;
 
-    @Autowired
     public FileUploaderUtil(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
     }

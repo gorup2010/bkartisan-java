@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,7 +27,6 @@ public class UserController {
     
     UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }

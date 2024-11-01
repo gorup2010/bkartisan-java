@@ -1,6 +1,5 @@
 package com.bkartisan.be.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Configuration.PaymentConfig;
@@ -33,7 +32,6 @@ public class PaymentService {
     private PaymentUtil paymentUtil;
     private OrderRepository orderRepository;
 
-    @Autowired
     public PaymentService(CartService cartService, PaymentConfig paymentConfig, PaymentUtil paymentUtil,
             OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
