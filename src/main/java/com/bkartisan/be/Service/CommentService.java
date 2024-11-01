@@ -1,6 +1,5 @@
 package com.bkartisan.be.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Dto.CreateCommentDTO;
@@ -16,7 +15,6 @@ public class CommentService {
     private CommentRepository commentRepo;
     private EntityManager entityManager;
 
-    @Autowired
     public CommentService(CommentRepository commentRepo, EntityManager entityManager) {
         this.entityManager = entityManager;
         this.commentRepo = commentRepo;

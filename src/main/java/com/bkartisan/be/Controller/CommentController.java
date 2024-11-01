@@ -2,7 +2,6 @@ package com.bkartisan.be.Controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ public class CommentController {
     
     private CommentService commentService;
 
-    @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }

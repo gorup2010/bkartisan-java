@@ -28,7 +28,6 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -50,7 +49,6 @@ public class ProductController {
     private ProductForAdminPageMapper productForAdminPageMapper;
     private ProductForSellerPageMapper productForSellerPageMapper;
 
-    @Autowired
     public ProductController(ProductService productService, CategoryService categoryService,
             ProductForHomePageMapper productForHomePageMapper, ProductForAdminPageMapper productForAdminPageMapper,
             ProductForSellerPageMapper productForSellerPageMapper) {

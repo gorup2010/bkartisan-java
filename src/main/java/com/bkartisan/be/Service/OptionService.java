@@ -2,7 +2,6 @@ package com.bkartisan.be.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Entity.Option;
@@ -13,7 +12,6 @@ public class OptionService {
     
     private OptionRepository optionRepository;
 
-    @Autowired
     public OptionService(OptionRepository optionRepository) {
         this.optionRepository = optionRepository;
     }

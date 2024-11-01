@@ -3,7 +3,6 @@ package com.bkartisan.be.Service;
 import java.util.List;
 import java.time.Duration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ public class UserService {
     private SetOperations<String, String> setOperations;
     private UserRepository userRepo;
 
-    @Autowired
     UserService(UserRepository userRepo, OtpUtil otpUtil, EmailUtil emailUtil,
             RedisTemplate<String, String> redisOperations) {
         this.otpUtil = otpUtil;

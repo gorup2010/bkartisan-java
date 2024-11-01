@@ -2,7 +2,6 @@ package com.bkartisan.be.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bkartisan.be.Repository.CategoryRepository;
@@ -14,7 +13,6 @@ public class CategoryService {
 
     CategoryRepository categoryRepo;
 
-    @Autowired
     public CategoryService(CategoryRepository categoryRepo) {
         this.categoryRepo = categoryRepo;
     }

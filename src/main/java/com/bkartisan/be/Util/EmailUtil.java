@@ -1,6 +1,5 @@
 package com.bkartisan.be.Util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -18,7 +17,6 @@ public class EmailUtil {
     private JavaMailSender mailSender;
     private FileLoaderUtil fileLoader;
 
-    @Autowired
     public EmailUtil(JavaMailSender mailSender, FileLoaderUtil fileLoader) {
         this.mailSender = mailSender;
         this.fileLoader = fileLoader;

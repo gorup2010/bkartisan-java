@@ -1,6 +1,5 @@
 package com.bkartisan.be.Util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ public class FileLoaderUtil {
 
     private ResourceLoader resourceLoader;
 
-    @Autowired
     public FileLoaderUtil(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }

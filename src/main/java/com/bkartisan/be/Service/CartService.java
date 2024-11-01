@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ public class CartService {
     private HashOperations<String, Integer, CartItem> hashOperations;
     private ProductService productService;
 
-    @Autowired
     public CartService(RedisTemplate<String, Object> redisOperations, ProductService productService) {
         this.productService = productService;
         this.redisOperations = redisOperations;

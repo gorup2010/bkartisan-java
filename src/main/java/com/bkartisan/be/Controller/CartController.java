@@ -2,7 +2,6 @@ package com.bkartisan.be.Controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +34,6 @@ public class CartController {
     
     private CartService cartService;
 
-    @Autowired
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
