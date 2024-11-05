@@ -2,11 +2,15 @@ package com.bkartisan.be.Controller;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bkartisan.be.Service.OrderService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import com.bkartisan.be.Constant.OrderStatus;
 import com.bkartisan.be.Dto.OrderForBuyerPageDTO;
 
@@ -24,10 +28,13 @@ public class HomeController {
         this.orderService = orderService;
     }
 
-    // TODO: Store user id in session instead the whole user entity.
-    // TODO: Research about ZonedDateTime
-    @PostMapping("/home") 
-    public ResponseEntity<List<OrderForBuyerPageDTO>> entry() {
-        return ResponseEntity.ok(orderService.getBuyerOrders("SaulGoofman", OrderStatus.PROCESSING));
+    @GetMapping("/home") 
+    public ResponseEntity<String> entry(HttpServletRequest request) {
+        try {
+            request.logout();
+        } catch (Exception e) {
+           System.out.println(e.getMessage());
+        }
+        return ResponseEntity.ok("Logout");
     }
 }

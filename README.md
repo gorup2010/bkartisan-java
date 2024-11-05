@@ -22,20 +22,23 @@ It provides some of the necessary and basic feature of an e-commerce website lik
 - Redis.
 - Swagger.
 
-## Architecture
-
-
 ## How to run the project
 
-
-## API documentation
-
+1. Clone the repository:
+`git clone https://github.com/gorup2010/bkartisan-java.git`
+2. Navigate to the project directory:
+`cd bkartisan-java`
+3. Update `application.properties` with your own database (MySQL, Redis) connection, Cloudinary config, Spring Email config and VNPay config.
+4. Import data.
+5. Build docker image.
+`docker build -t bkartisan`
+6. Run container.
+`docker run -p 8080:8080 bkartisan`
 
 ## Screenshot and demo
 
 
 ## Continued development
 
-- Using Docker for the application.
+- Unit Testing
 - Deploy into a cloud service.
-- Refactor code and apply design patterns.
