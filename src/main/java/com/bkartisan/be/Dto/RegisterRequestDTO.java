@@ -13,7 +13,7 @@ import lombok.ToString;
 public class RegisterRequestDTO {
 
     @NotBlank(message = "Username cannot be blank")
-    @Size(max = 10, message = "Username cannot be longer than 50 characters")
+    @Size(max = 50, message = "Username cannot be longer than 50 characters")
     private String username;
 
     @NotBlank(message = "Password cannot be blank")

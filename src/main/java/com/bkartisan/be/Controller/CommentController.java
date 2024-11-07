@@ -9,7 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bkartisan.be.Dto.CreateCommentDTO;
+import com.bkartisan.be.Entity.Category;
 import com.bkartisan.be.Service.CommentService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 @RestController
@@ -21,6 +27,14 @@ public class CommentController {
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
+
+
+
+
+    @Operation(summary = "Create comment", tags = { "Comment" }, responses = {
+        @ApiResponse(responseCode = "201", description = "Create successfully", content = @Content()),
+        @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content())
+    })
 
     @PostMapping()
     public ResponseEntity<Void> createComment(@RequestBody CreateCommentDTO createCommentDTO, Principal principal) {

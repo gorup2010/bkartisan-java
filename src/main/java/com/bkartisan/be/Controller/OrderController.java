@@ -66,8 +66,8 @@ public class OrderController {
 
     @GetMapping("seller")
     @Secured("seller")
-    public ResponseEntity<List<OrderForSellerPageDTO>> getSellerOrders(@RequestParam(required = false) Integer page, 
-                                    @RequestParam(required = false) Integer offset, Principal principal) {
+    public ResponseEntity<List<OrderForSellerPageDTO>> getSellerOrders(@Schema(defaultValue = "1") @RequestParam(required = false) Integer page, 
+                                @Schema(defaultValue = "10") @RequestParam(required = false) Integer offset, Principal principal) {
         return ResponseEntity.ok(orderService.getSellerOrders(principal.getName(), PageRequest.of(page - 1, offset)));
     }
 

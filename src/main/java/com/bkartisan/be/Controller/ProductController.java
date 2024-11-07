@@ -76,6 +76,8 @@ public class ProductController {
             @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer offset) {
         List<Product> prods = productService.getProductsForHomePage(searchTerm, category, page, offset);
         List<ProductForHomePageDTO> prodsDTO = prods.stream().map(productForHomePageMapper).collect(Collectors.toList());
+        System.out.println("here");
+        System.out.println(prodsDTO);
         return ResponseEntity.ok(prodsDTO);
     }
 

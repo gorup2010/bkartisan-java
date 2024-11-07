@@ -123,9 +123,9 @@ public class AuthController {
 
 
     // TODO: Change password of user.
-    @PostMapping("password")
-    public void changePassword() {
+    // @PostMapping("password")
+    // public void changePassword() {
 
-    }
+    // }
 
 }
