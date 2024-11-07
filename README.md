@@ -36,7 +36,7 @@ It provides some of the necessary and basic feature of an e-commerce website lik
 `docker run -p 8080:8080 bkartisan`
 
 ## Screenshot and demo
-
+Video Demo: https://www.youtube.com/watch?v=HKctXjySBKY
 
 ## Continued development
 
